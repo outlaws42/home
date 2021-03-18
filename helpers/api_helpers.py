@@ -99,9 +99,9 @@ def get_latest_named_with_tz_db(db, col_read,name):
     aware_times = collection.with_options(
         codec_options=CodecOptions(tz_aware=True, tzinfo=pytz.timezone('US/Eastern')))
     if name == 'gdbasement':
-      response = aware_times.find({name:{'$in':['Open','Closed']}}, {'_id': 0}).sort("_id", -1).limit(1)
+      response = aware_times.find({name:{'$in':['Open','Closed']}}, {'_id': 0, 'replace' : 0}).sort("_id", -1).limit(1)
     else:
-     response = aware_times.find({name:{'$gt':-1}}, {'_id': 0}).sort("_id", -1).limit(1)
+     response = aware_times.find({name:{'$gte':0}}, {'_id': 0, 'replace':0}).sort("_id", -1).limit(1)
     results = [doc for doc in response]
     print(f'get_multi {results}')
     return results

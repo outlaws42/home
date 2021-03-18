@@ -21,7 +21,7 @@ db = mongo[DATABASE]
 
 @app.get('/')
 def index():
-  return 'Home API'
+  return 'Home API (See /docs for information on the API)'
 
 @app.get('/weather/{collection}')
 def weather(collection: str):
@@ -82,6 +82,7 @@ def sensors(name:str):
   date_key = 'dt'
   root_key = 'sensors'
   result = get_latest_named_with_tz_db(db, 'sensors',name)
+  print(result[0][date_key])
   date_stamp = timestamp_from_datetime(result[0][date_key])
   dict = put_in_dict(root_key, date_key, result, date_stamp)
   # check_for_indoor_negative(dict, root_key,'front_room')

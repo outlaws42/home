@@ -20,7 +20,7 @@ def replace_one_db(col, data, topic,replace):
 
 def on_message_frtemp(client, userdata, message):
     # Callback fires when a published message is received.
-    fr_temp = str(message.payload.decode("utf-8"))
+    fr_temp = float(message.payload.decode("utf-8"))
     topic = 'frtemp'
     time_now = datetime.utcnow()
     replace = 2
@@ -43,7 +43,7 @@ def on_message_gdstatus(client, userdata, message):
         'dt' : time_now, 
         'replace' : replace
         }
-    # replace_one_db('sensors', t, topic, replace)
+    replace_one_db('sensors', t, topic, replace)
     print(f'Recieved message: {t}')
 
 def on_message(client, userdata, message):
@@ -52,7 +52,7 @@ def on_message(client, userdata, message):
     print(f'Recieved message')
 
 # Create a client and connecting to the broker
-client = mqtt.Client('laptop    ')
+client = mqtt.Client('laptop')
 client.message_callback_add('room/basement/gdstatus',on_message_gdstatus)
 client.message_callback_add('room/temperature/front',on_message_frtemp)
 client.on_message = on_message
