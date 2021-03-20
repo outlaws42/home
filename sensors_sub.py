@@ -12,38 +12,41 @@ from config.settings import BROKER_ADDRESS, DB_URI, DATABASE
 mongo = MongoClient(DB_URI)
 db = mongo[DATABASE]
 
-def replace_one_db(col, data, topic,replace):
+def replace_one_db(col, data, topic):
     """ replace one to a mongoDB database  """
     collection = db[col]
-    collection.replace_one({'replace' : replace}, data, True)
+    collection.replace_one({'sensor' : topic}, data, True)
     print(f'wrote {topic} to the {col} collection')
 
 def on_message_frtemp(client, userdata, message):
     # Callback fires when a published message is received.
-    fr_temp = float(message.payload.decode("utf-8"))
+    fr_temp = int(round(float(message.payload.decode("utf-8"))))
     topic = 'frtemp'
     time_now = datetime.utcnow()
-    replace = 2
     t = {
-        topic : fr_temp, 
+        'sensor': topic,
+        'sensor_val' : fr_temp, 
         'dt' : time_now, 
-        'replace' : replace
         }
-    replace_one_db('sensors', t, topic, replace)
+    replace_one_db('sensors', t, topic)
     print(f'Recieved message: {t}')
 
 def on_message_gdstatus(client, userdata, message):
     # Callback fires when a published message is received.
-    gd_status = str(message.payload.decode("utf-8"))
+    gd_payload = str(message.payload.decode("utf-8"))
     topic = 'gdbasement'
     time_now = datetime.utcnow()
-    replace = 1
+    if gd_payload == 'Closed':
+        gd_status = 0
+    elif gd_payload == 'Open':
+        gd_status = 1
+
     t = {
-        topic : gd_status, 
+        'sensor': topic,
+        'sensor_val' : gd_status, 
         'dt' : time_now, 
-        'replace' : replace
         }
-    replace_one_db('sensors', t, topic, replace)
+    replace_one_db('sensors', t, topic)
     print(f'Recieved message: {t}')
 
 def on_message(client, userdata, message):

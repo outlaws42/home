@@ -81,12 +81,12 @@ def sensors():
 def sensors(name:str):
   date_key = 'dt'
   root_key = 'sensors'
-  result = get_latest_named_with_tz_db(db, 'sensors',name)
+  result = get_latest_named_with_tz_db(db, root_key,name)
   print(result[0][date_key])
   date_stamp = timestamp_from_datetime(result[0][date_key])
   dict = put_in_dict(root_key, date_key, result, date_stamp)
   # check_for_indoor_negative(dict, root_key,'front_room')
-  check_for_delay_time(dict, root_key, date_key, name)
+  check_for_delay_time(dict, root_key, date_key, 'sensor_val')
   sterilized = json.loads(json_util.dumps(dict))
   return sterilized
 

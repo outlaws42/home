@@ -55,7 +55,7 @@ class Weather():
         # print(f" This is the location {location}")
         try:
             if USE_API == True:
-                c = requests.get(f'https://api.openweathermap.org/data/2.5/weather?zip=46725,us&units={UNITS}&appid={key}')
+                c = requests.get(f'https://api.openweathermap.org/data/2.5/weather?zip={ZIP_CODE},us&units={UNITS}&appid={key}')
                 f = requests.get(f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={long}&units={UNITS}&exclude=current,alert,minutely,hourly&appid={key}')
                 current = c.json()
                 forecast = f.json()
@@ -63,7 +63,9 @@ class Weather():
                 tmod.save_json('forecast.json', forecast, 'relative')
                 self.current = tmod.open_json('current.json','relative')
                 self.forecast_in = tmod.open_json('forecast.json','relative')
+                print(f"USE_API: {USE_API}")
             else:
+                print(f"USE_API: {USE_API}")
                 self.current = tmod.open_json('current.json', 'relative')
                 self.forecast_in = tmod.open_json('forecast.json','relative')
         except Exception as e:
@@ -157,7 +159,10 @@ class Weather():
         # forecast high / low temp for 3 days    
         forecast = []
         for i in range(days):
-            temp = {f'day{i}_temp' : f"{round(self.forecast_in['daily'][i]['temp']['max'])}{self.degree_sign}/{round(self.forecast_in['daily'][i]['temp']['min'])}{self.degree_sign}"}
+            temp = {
+                f"day{i}_temp_high" : round(self.forecast_in['daily'][i]['temp']['max']), 
+                f"day{i}_temp_low": round(self.forecast_in['daily'][i]['temp']['min'])
+            }
             forecast.append(temp)
         return forecast
     

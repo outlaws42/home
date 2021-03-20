@@ -55,6 +55,7 @@ class GetWeather():
     self.forecast = combine_dict(self.weather.get_forecast())
     self.weather_info = combine_dict(self.weather.gleen_info())
     print(f'Weather_info: {self.weather_info}')
+    print(f'Forecast_info: {self.forecast}')
     self.replace_one_db('forecast', self.forecast)
     self.write_one_db('current', self.weather_info)
 
