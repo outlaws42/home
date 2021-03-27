@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-version = '2.5'
+version = '2021-03-26'
 
 import random
 import os
@@ -26,11 +26,11 @@ def get_resource_path(rel_path):
     abs_path_to_resource = os.path.abspath(rel_path_to_resource)
     return abs_path_to_resource
 
-def open_file(file_,type_='relative',variable='Hey'):
+def open_file(file_,type_='relative'):
     home = os.path.expanduser("~")
     try:
-        if type_ == 'home':
-            with open('{}/{}'.format(home,file_), 'r') as path_text:
+        if type_ == 'home' or type_ == 'Home':
+            with open(f'{home}/{file_}', 'r') as path_text:
                 variable=path_text.read()
         else:
             with open(get_resource_path(file_), 'r') as text:
@@ -38,8 +38,10 @@ def open_file(file_,type_='relative',variable='Hey'):
         return variable
     except(FileNotFoundError) as e:
         print(e)
-        if type_ == 'home':
-            with open('{}/{}'.format(home,file_), 'w') as output:
+        print('It is reading here')
+        variable = '0'
+        if type_ == 'home' or type_ == 'Home':
+            with open(f'{home}/{file_}', 'w') as output:
                 output.write(variable)
         else:
             with open(get_resource_path(file_), 'w') as output:
@@ -47,8 +49,8 @@ def open_file(file_,type_='relative',variable='Hey'):
 
 def save_file(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
-    if type_ == 'Home':
-        with open('{}/{}'.format(home,file_), 'w') as output:
+    if type_ == 'home' or type_ == 'Home':
+        with open(f'{home}/{file_}', 'w') as output:
             output.write(variable)
     else:
         with open(get_resource_path(file_), 'w') as output:
@@ -56,7 +58,7 @@ def save_file(file_,variable,type_='relative'):
 
 def save_file_list(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
-    if type_ == 'Home':
+    if type_ == 'home' or type_ == 'Home':
         with open('{}/{}'.format(home,file_), 'w') as output:
             output.write(''.join(variable))
     else:
@@ -65,7 +67,7 @@ def save_file_list(file_,variable,type_='relative'):
 
 def save_file_append(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
-    if type_ == 'Home':
+    if type_ == 'home' or type_ == 'Home':
         with open('{}/{}'.format(home,file_), 'a') as output:
             output.write(variable)
     else:
@@ -75,7 +77,7 @@ def save_file_append(file_,variable,type_='relative'):
 def save_pickle(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
     try:
-        if type_ == 'home':
+        if type_ == 'home' or type_ == 'Home':
             with open('{}/{}'.format(home,file_), 'wb') as fle:
                     pickle.dump(variable, fle)
         else:
