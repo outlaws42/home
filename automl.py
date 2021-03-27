@@ -29,7 +29,6 @@ class SendMail:
         self.add_open_time()
         self.logic()
         if self.mode == 0: # debug Mail
-            self.login_info()
             self.mail()
         else:
             pass
@@ -66,7 +65,6 @@ class SendMail:
             self.time_collective += int(self.tme)
             save_file('.tme_accum', str(self.time_collective), 'home')
             print(str(self.time_collective) + ' saving to .tme_accum')
-            self.login_info()
             self.mail()
             self.tme = 0
             save_file('.tme', str(self.tme), 'home')
@@ -77,14 +75,16 @@ class SendMail:
             pass
 
     def login_info(self):
-        self.ps = open_json('.cred.json', 'home')
-        for key, value in self.ps.items():
-            self.us = key
-            self.psw = value
-        # print(self.us)
-        # print(self.psw)
+        ps = open_json('.cred.json', 'home')
+        for key, value in ps.items():
+            us = key
+            psw = value
+            return [us,psw]
 
     def mail(self):
+        us, psw = self.login_info()
+        print(us)
+        print(psw)
         recipients = open_file('.send', 'home').splitlines()
         content = '\n' + 'Garage: ' + self.final_status + \
             ' (' + str(self.time_collective) + ' min notifier)'
@@ -94,8 +94,8 @@ class SendMail:
         mail.ehlo()
         mail.starttls()
         mail.ehlo()
-        mail.login(self.us, self.psw)
-        mail.sendmail(self.us, recipients, content)
+        mail.login(us, psw)
+        mail.sendmail(us, recipients, content)
         mail.close()
 
 
