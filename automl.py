@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 # Auto text garage door open status
 # Requires 3 file .tme, .tme_accum, .cred.json, .send
-from weather.tmod import open_file, save_file, open_json
+from weather.tmod import open_file, save_file, open_json, open_yaml
 from pymongo import MongoClient
 from config.settings import DB_URI, DATABASE, API
 from helpers import get_latest_named_with_tz_db
@@ -18,7 +18,7 @@ db = mongo[DATABASE]
 
 
 class SendMail:
-    version = '2021-03-27_1'
+    version = '2021-03-28'
     # home = expanduser("~")
     door_open = 'Open'
     mode = 1  # 0 = Debug mail, 1 = production
@@ -41,7 +41,7 @@ class SendMail:
         elif sensor_val == 0:
             self.final_status = 'Closed'
         self.tme = open_file('.tme','home')
-        print(str(self.tme) + ' open from .tme')
+        print(f'{self.tme} open from .tme')
         if self.final_status == self.door_open:
             self.tme = int(self.tme)
             self.tme+=self.time_increment
@@ -49,29 +49,29 @@ class SendMail:
             self.tme = 0
             self.time_collective = '0'
             save_file('.tme_accum',self.time_collective,'home')
-            print(str(self.time_collective) + ' saving to .tme_accum')
+            print(f'{self.time_collective} saving to .tme_accum')
         save_file('.tme',str(self.tme),'home')
-        print(str(self.tme) + ' saving to .tme')
+        print(f'{self.tme} saving to .tme')
 
     def logic(self):
 
         if self.tme >= self.time_limit:
             self.time_collective = open_file('.tme_accum', 'home')
-            print(str(self.time_collective) + ' open from .tme_accum')
+            print(f'{self.time_collective} open from .tme_accum')
             self.time_collective = int(self.time_collective)
             self.time_collective += int(self.tme)
             save_file('.tme_accum', str(self.time_collective), 'home')
-            print(str(self.time_collective) + ' saving to .tme_accum')
+            print(f'{self.time_collective} saving to .tme_accum')
             self.mail()
             self.tme = 0
             save_file('.tme', str(self.tme), 'home')
 
-            print('Sending text')
+            print('Sending email')
         else:
             pass
 
     def login_info(self):
-        ps = open_json('.cred.json', 'home')
+        ps = open_yaml('.cred.yaml', 'home')
         for key, value in ps.items():
             us = key
             psw = value
@@ -79,11 +79,11 @@ class SendMail:
 
     def mail(self):
         us, psw = self.login_info()
-        print(us)
-        print(psw)
         recipients = open_file('.send', 'home').splitlines()
-        content = '\n' + 'Garage: ' + self.final_status + \
-            ' (' + str(self.time_collective) + ' min notifier)'
+        content = (
+            f'\n Garage: {self.final_status}'
+            f'( {self.time_collective} min notifier)'
+            )
 
         mail = smtplib.SMTP('smtp.gmail.com', 587)
 
