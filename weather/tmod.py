@@ -1,23 +1,35 @@
 #! /usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-version = '2021-03-27'
+version = '2021-03-28'
 
+# Imports included with python
 import random
 import os
 import os.path
 import sys
-import inspect
 from datetime import datetime, date
+from collections import ChainMap # Requires python 3.3
 import json
-import yaml
-from collections import ChainMap
+
+# Imports installed through pip
+try:
+  # pip install pyyaml if needed
+  import yaml
+except:
+  pass
 
 try:
-    from bs4 import BeautifulSoup  # Needs to be installed through pip
-    import requests
+  # pip install requests if needed
+  import requests
 except:
-    pass
+  pass
+
+try:
+  # pip install beautifulsoup4 if needed
+  from bs4 import BeautifulSoup  
+except:
+  pass
 
 # File I/O /////////////////////////////////////////
 def get_resource_path(rel_path):
