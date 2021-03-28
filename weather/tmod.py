@@ -1,16 +1,16 @@
 #! /usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-version = '2021-03-26'
+version = '2021-03-27'
 
 import random
 import os
 import os.path
 import sys
 import inspect
-import pickle
-import datetime
+from datetime import datetime, date
 import json
+import yaml
 from collections import ChainMap
 
 try:
@@ -59,7 +59,7 @@ def save_file(file_,variable,type_='relative'):
 def save_file_list(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
     if type_ == 'home' or type_ == 'Home':
-        with open('{}/{}'.format(home,file_), 'w') as output:
+        with open(f'{home}/{file_}', 'w') as output:
             output.write(''.join(variable))
     else:
         with open(get_resource_path(file_), 'w') as output:
@@ -68,52 +68,16 @@ def save_file_list(file_,variable,type_='relative'):
 def save_file_append(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
     if type_ == 'home' or type_ == 'Home':
-        with open('{}/{}'.format(home,file_), 'a') as output:
+        with open(f'{home}/{file_}', 'a') as output:
             output.write(variable)
     else:
         with open(get_resource_path(file_), 'a') as output:
             output.write(variable)
 
-def save_pickle(file_,variable,type_='relative'):
-    home = os.path.expanduser("~")
-    try:
-        if type_ == 'home' or type_ == 'Home':
-            with open('{}/{}'.format(home,file_), 'wb') as fle:
-                    pickle.dump(variable, fle)
-        else:
-            with open(get_resource_path(file_), 'wb') as fle:
-                    pickle.dump(variable, fle)
-                    print('saved file')
-    except(FileNotFoundError) as e:
-        print(e)
-        
-
-        
-def open_pickle(file_,type_='relative'):
-    home = os.path.expanduser("~")
-    try:
-        if type_ == 'home':
-            with open('{}/{}'.format(home,file_), 'rb') as fle:
-                    variable = pickle.load(fle)
-            return variable
-        else:
-            with open(get_resource_path(file_), 'rb') as fle:
-                    variable = pickle.load(fle)
-            return variable
-    except(FileNotFoundError, EOFError) as e:
-        print(e)
-        variable = 0
-        if type_ == 'home':
-            with open('{}/{}'.format(home,file_), 'wb') as fle:
-                pickle.dump(variable, fle)
-        else:
-            with open(get_resource_path(file_), 'wb') as fle:
-                pickle.dump(variable, fle)
-                
 def save_json(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
-    if type_ == 'home':
-        with open('{}/{}'.format(home,file_), 'w') as output:
+    if type_ == 'home' or type_ == 'Home':
+        with open(f'{home}/{file_}', 'w') as output:
             json.dump(variable,output, sort_keys=True, indent=4)
     else:
         with open(get_resource_path(file_), 'w') as output:
@@ -122,8 +86,8 @@ def save_json(file_,variable,type_='relative'):
 def open_json(file_,type_='relative'):
     home = os.path.expanduser("~")
     try:
-        if type_ == 'home':
-            with open('{}/{}'.format(home,file_), 'r') as fle:
+        if type_ == 'home' or type_ == 'Home':
+            with open(f'{home}/{file_}', 'r') as fle:
                     variable = json.load(fle)
             return variable
         else:
@@ -133,13 +97,44 @@ def open_json(file_,type_='relative'):
     except(FileNotFoundError, EOFError) as e:
         print(e)
         variable = 0
-        if type_ == 'home':
-            with open('{}/{}'.format(home,file_), 'w') as fle:
+        if type_ == 'home' or type_ == 'Home':
+            with open(f'{home}/{file_}', 'w') as fle:
                 json.dump(variable, fle)
         else:
             with open(get_resource_path(file_), 'w') as fle:
                 json.dump(variable, fle)
+
+def save_yaml(file_,dict_file,type_='relative'):
+    home = os.path.expanduser("~")
+    if type_ == 'home' or type_ == 'Home':
+        with open(f'{home}/{file_}', 'w') as output:
+            yaml.dump(dict_file,output, sort_keys=True)
+    else:
+        with open(get_resource_path(file_), 'w') as output:
+            yaml.dump(dict_file,output, sort_keys=True)
+
+def open_yaml(file_,type_='relative'):
+    home = os.path.expanduser("~")
+    try:
+        if type_ == 'home' or type_ == 'Home':
+            with open(f'{home}/{file_}', 'r') as fle:
+                    variable = yaml.full_load(fle)
+            return variable
+        else:
+            with open(get_resource_path(file_), 'r') as fle:
+                    variable = yaml.full_load(fle)
+            return variable
+    except(FileNotFoundError, EOFError) as e:
+        print(e)
+        variable = 0
+        if type_ == 'home' or type_ == 'Home':
+            with open(f'{home}/{file_}', 'w') as fle:
+                yaml.dump(variable, fle)
+        else:
+            with open(get_resource_path(file_), 'w') as fle:
+                yaml.dump(variable, fle)
               
+
 # Gleen info ////////////////////////////////////////////////////
 def html_info(tag,url):
     try:
@@ -207,18 +202,18 @@ def reverse_sublist(self,list_):
     
 # Date/Time//////////////////////////////////////////////
 def day_diff(month,day,year):
-    current = datetime.date.today()
-    day = datetime.date(year,month,day)
+    current = date.today()
+    day = date(year,month,day)
     till_day = day - current
     return till_day.days
     
 def year_current():
-    current = datetime.date.today()
+    current = date.today()
     current_year = current.year
     return current_year
     
 def time_now():
-    current =  datetime.datetime.now().strftime('%H:%M:%S')
+    current =  datetime.now().strftime('%H:%M:%S')
     return current
 
    
@@ -235,8 +230,8 @@ def import_temp(file_='temp.txt'):
         
     if temp_diff == 0:  
         if temp > '0':
-            print('Temp diff: {}'.format(temp_diff))
-            print('This is the temp: {}'.format(temp))
+            print(f'Temp diff: {temp_diff}')
+            print(f'This is the temp: {temp}')
             current_temp = temp
         else:
                 current_temp = 'Bad Reading'

@@ -40,7 +40,6 @@ class SendMail:
             self.final_status = 'Open'
         elif sensor_val == 0:
             self.final_status = 'Closed'
-        print(self.final_status)
         self.tme = open_file('.tme','home')
         print(str(self.tme) + ' open from .tme')
         if self.final_status == self.door_open:
@@ -55,8 +54,6 @@ class SendMail:
         print(str(self.tme) + ' saving to .tme')
 
     def logic(self):
-        print(self.tme)
-        print(self.time_limit)
 
         if self.tme >= self.time_limit:
             self.time_collective = open_file('.tme_accum', 'home')
@@ -71,7 +68,6 @@ class SendMail:
 
             print('Sending text')
         else:
-            print('pass')
             pass
 
     def login_info(self):
