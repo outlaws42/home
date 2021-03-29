@@ -34,6 +34,7 @@ def on_message_frtemp(client, userdata, message):
 def on_message_gdstatus(client, userdata, message):
     # Callback fires when a published message is received.
     gd_payload = str(message.payload.decode("utf-8"))
+    gd_status = 1
     topic = 'gdbasement'
     time_now = datetime.utcnow()
     if gd_payload == 'Closed':
