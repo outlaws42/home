@@ -84,6 +84,8 @@ class SendMail:
             f'\n Garage: {self.final_status}'
             f'( {self.time_collective} min notifier)'
             )
+        subject = 'Garage Door Status'
+        message = f'Subject: {subject}\n\n{content}'
 
         mail = smtplib.SMTP('smtp.gmail.com', 587)
 
@@ -91,7 +93,7 @@ class SendMail:
         mail.starttls()
         mail.ehlo()
         mail.login(us, psw)
-        mail.sendmail(us, recipients, content)
+        mail.sendmail(us, recipients, message)
         mail.close()
 
 
