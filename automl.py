@@ -1,28 +1,29 @@
 #! /usr/bin/env python3
-
 # -*- coding: utf-8 -*-
+
+version = '2021-04-07'
+
 # Auto text garage door open status
-# Requires 3 file .tme, .tme_accum, .cred.json, .send
-from weather.tmod import open_file, save_file, open_json, open_yaml
+# Requires 4 file .tme, .tme_accum, .cred.yaml, .send
+from weather.tmod import open_file, save_file, open_yaml
 from pymongo import MongoClient
 from config.settings import DB_URI, DATABASE, API
-from helpers import get_latest_named_with_tz_db
 from time import sleep
 from os.path import expanduser
 import smtplib
+import requests
 refresh = 60   # In sec.
-
+time_limit_open = 30
+time_limit_error = 90
 # Database info
 mongo = MongoClient(DB_URI)
 db = mongo[DATABASE]
 
 
 class SendMail:
-    version = '2021-03-28'
-    # home = expanduser("~")
     door_open = 'Open'
     mode = 1  # 0 = Debug mail, 1 = production
-    time_limit = 30  # In min.
+    # time_limit = 30  # In min.
     time_increment = 1  # In min.
 
     def __init__(self):
@@ -34,15 +35,21 @@ class SendMail:
             pass
 
     def add_open_time(self):
-        result = get_latest_named_with_tz_db(db, 'sensors','gdbasement')
-        sensor_val = result[0]['sensor_val']
+        c = requests.get('http://192.168.1.3:8000/house/sensors/gdbasement')
+        result = c.json()
+        sensor_val = result['sensors']['sensor_val']
         if sensor_val == 1:
-            self.final_status = 'Open'
-        elif sensor_val == 0:
             self.final_status = 'Closed'
+            self.time_limit= time_limit_open
+        elif sensor_val == 2:
+            self.final_status = 'Open'
+            self.time_limit= time_limit_open
+        else:
+            self.final_status = 'ERROR'
+            self.time_limit = time_limit_error
         self.tme = open_file('.tme','home')
         print(f'{self.tme} open from .tme')
-        if self.final_status == self.door_open:
+        if self.final_status == self.door_open or self.final_status =='ERROR':
             self.tme = int(self.tme)
             self.tme+=self.time_increment
         else:
@@ -51,7 +58,7 @@ class SendMail:
             save_file('.tme_accum',self.time_collective,'home')
             print(f'{self.time_collective} saving to .tme_accum')
         save_file('.tme',str(self.tme),'home')
-        print(f'{self.tme} saving to .tme')
+        print(f'{self.tme} saving to .tme Limit is {self.time_limit}')
 
     def logic(self):
 
