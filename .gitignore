@@ -26,3 +26,5 @@ weatherkiosk/*.swp
 test_info_collect.py
 test_publish.py
 test_subscribe.py
+# weatherapi.py
+forecastwa.json

@@ -48,8 +48,10 @@ class Weather():
                 self.forecast_in = tmod.open_json('forecast.json','relative')
         except Exception as e:
            self.current = tmod.open_json('current.json', 'relative')
+           self.forecast_in = tmod.open_json('forecast.json','relative')
            logging.info('Collect current error:  ' + str(e))
            print('Collect current error:  ' + str(e))
+
         
     def gleen_info(self):
         # weather service
@@ -138,8 +140,12 @@ class Weather():
         # forecast high / low temp for 3 days    
         forecast = []
         for i in range(days):
-            temp = {f'day{i}_temp' : 
-                    f"{round(self.forecast_in['data'][i]['max_temp'])}{self.degree_sign}/{round(self.forecast_in['data'][i]['min_temp'])}{self.degree_sign}"}
+            temp = {
+                f"day{i}_temp_high" : round(self.forecast_in['data'][i]['max_temp']), 
+                f"day{i}_temp_low": round(self.forecast_in['data'][i]['min_temp'])
+            }
+            # temp = {f'day{i}_temp' : 
+            #         f"{round(self.forecast_in['data'][i]['max_temp'])}{self.degree_sign}/{round(self.forecast_in['data'][i]['min_temp'])}{self.degree_sign}"}
             forecast.append(temp)
         return forecast
     

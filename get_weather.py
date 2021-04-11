@@ -12,8 +12,11 @@ from config.settings import DB_URI, DATABASE, API
 from weather.tmod import combine_dict
 if API == 1:
   from weather.wbit import Weather
-else:
+elif API == 2:
   from weather.owm import Weather
+elif API == 3:
+  from weather.weatherapi import Weather
+
 
 # Refresh rate /////////////////////////////////
 refresh_type = '1'  # 1 = minutes 2 = Seconds
