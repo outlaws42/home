@@ -28,3 +28,4 @@ test_publish.py
 test_subscribe.py
 # weatherapi.py
 forecastwa.json
+weather/tmod.py
