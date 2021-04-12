@@ -13,7 +13,8 @@ Right now I am really working on this and it is changing all the time. Currently
 
 ## Prerequisites
 
-requires: python 3.3, Open Weather Map api key, mongoDB database
+requires: python 3.3, Open Weather Map api key, mongoDB database. It also requires tmod.py 
+in the weather folder. I remove this from the repos because it was getting hard to maintain. you can get tmod from https://github.com/outlaws42/tmod.
 
 ## config.py
 You will need to create a dir in config called instance and put in your config.py.  So it will be like this config/instance/config.py 
