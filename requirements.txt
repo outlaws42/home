@@ -1,0 +1,11 @@
+geographiclib
+geopy
+uvicorn
+fastapi
+Jinja2
+paho-mqtt
+pymongo
+pytest
+python-dotenv
+pytz
+requests
