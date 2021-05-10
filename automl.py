@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-version = '2021-05-09'
+version = '2021-05-10'
 
 # Auto text garage door open status
 # Requires 4 file .open_time, .open_time_accum, .cred.yaml, .send
@@ -120,8 +120,6 @@ def main():
         )
   else:
     pass
-
-
 
 if __name__ == "__main__":
     try:
