@@ -1,8 +1,10 @@
 from helpers.tmod import (
-  check_file_dir, gen_key, home_dir, make_dir, colors, open_file, open_yaml,
-  save_yaml, input_list, input_single, remove_file,
+  check_file_dir, gen_key, make_dir, open_file, open_yaml,
+  save_yaml, input_list,  remove_file,
   encrypt, check_dir
   )
+from helpers.colors import Colors as c
+from helpers.file_location import Location as loc
 
 def open_settings(conf_dir, conf_file):
   settings = open_yaml(
@@ -75,8 +77,8 @@ def config_setup(conf_dir: str, conf_file: str):
   setup configuration file. Sets up username 
   and password for email notifications
   """
-  c = colors()
-  home = home_dir()
+  # c = colors()
+  home = loc.home_dir()
   dir_exists = check_dir(conf_dir)
 
   if dir_exists == False:
@@ -85,17 +87,17 @@ def config_setup(conf_dir: str, conf_file: str):
   # file_exists = check_file_dir(f'{conf_dir}/{conf_file}')
 
   print(
-    f'\n{c["YELLOW"]}{c["BOLD"]}We could not find any ' 
-    f'configuration folder{c["END"]}'
-    f'\n{c["GREEN"]}This Wizard will ask some questions ' 
-    f'to setup the configuration needed for the script to function.{c["END"]}'
-    f'\n{c["GREEN"]}{c["BOLD"]}This configuration wizard will only run once.{c["END"]}\n'
-    f'\n{c["GREEN"]}The first 2 questions are going ' 
+    f'\n{c.YELLOW}{c.BOLD}We could not find any ' 
+    f'configuration folder{c.END}'
+    f'\n{c.GREEN}This Wizard will ask some questions ' 
+    f'to setup the configuration needed for the script to function.{c.END}'
+    f'\n{c.GREEN}{c.BOLD}This configuration wizard will only run once.{c.END}\n'
+    f'\n{c.GREEN}The first 2 questions are going ' 
     f'to be about your email and password you are using to send. '
     f'\nThis login information will be stored on your local ' 
     f'computer encrypted seperate '
     f'\nfrom the rest of the configuration. ' 
-    f'This is not viewable by browsing the filesystem{c["END"]}'
+    f'This is not viewable by browsing the filesystem{c.END}'
   )
   # sento_exists = automl_config_exist(conf_dir, conf_file)
 
@@ -148,12 +150,12 @@ def config_setup(conf_dir: str, conf_file: str):
     fdest = 'home',
     content = content)
   print(
-    f'\n{c["YELLOW"]}{c["BOLD"]}This completes the wizard{c["END"]}'
+    f'\n{c.YELLOW}{c.BOLD}This completes the wizard{c.END}'
     f'\nThe configuration file has been written to disk'
     f'\nIf you want to change the settings you can edit ' 
-    f'{c["CYAN"]}{c["BOLD"]}{home}/{conf_dir}/{conf_file}{c["END"]}'
-    f'\n{c["GREEN"]}{c["BOLD"]}This wizard ' 
+    f'{c.CYAN}{c.BOLD}{home}/{conf_dir}/{conf_file}{c.END}'
+    f'\n{c.GREEN}{c.BOLD}This wizard ' 
     f'won\'t run any more, So the script can ' 
-    f'now be run automatically{c["END"]}\n'
-    f'\n{c["CYAN"]}{c["BOLD"]}You can stop ' 
-    f'the script by typing Ctrl + C{c["END"]}\n')
+    f'now be run automatically{c.END}\n'
+    f'\n{c.CYAN}{c.BOLD}You can stop ' 
+    f'the script by typing Ctrl + C{c.END}\n')

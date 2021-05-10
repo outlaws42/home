@@ -21,26 +21,10 @@ refresh = 60   # In sec.
 time_limit_open = 30
 time_limit_error = 90
 door_open = 'Open'
-mode = 0  # 0 = Debug mail, 1 = production
+mode = 1  # 0 = Debug mail, 1 = production
 time_increment = 1  # In min.
-
-
-# # Database info
-# mongo = MongoClient(DB_URI)
-# db = mongo[DATABASE]
-
 conf_dir = '.config/home'
 conf_file = 'settings.yaml'
-
-# def open_settings():
-#   settings = open_yaml(
-#     fname = f"{conf_dir}/{conf_file}", 
-#     fdest = "home"
-#     )
-#   print(settings)
-#   return settings['SENDTO']
-
-
 
 def add_open_time():
     c = requests.get('http://192.168.1.3:8000/house/sensors/gdbasement')
@@ -123,53 +107,6 @@ def mail_info(
     "subject": sub, 
     "sendto": st
     }
- 
-
-
-# def login_info(self):
-#     ps = open_yaml('.cred.yaml', 'home')
-#     for key, value in ps.items():
-#         us = key
-#         psw = value
-#         return [us,psw]
-
-# def mail(self):
-#     us, psw = self.login_info()
-#     recipients = open_file('.send', 'home').splitlines()
-#     content = (
-#         f'\n Garage: {self.final_status}'
-#         f'( {self.time_collective} min notifier)'
-#         )
-#     subject = 'Garage Door Status'
-#     message = f'Subject: {subject}\n\n{content}'
-
-#     mail = smtplib.SMTP('smtp.gmail.com', 587)
-
-#     mail.ehlo()
-#     mail.starttls()
-#     mail.ehlo()
-#     mail.login(us, psw)
-#     mail.sendmail(us, recipients, message)
-#     mail.close()
-
-# def automl_config_exist():
-#    file_exists = check_file_dir(
-#      fname = f'{conf_dir}/{conf_file}', 
-#      fdest = 'home'
-#      )
-#    if file_exists == False:
-#      print(file_exists)
-#      config_setup(conf_dir, conf_file)
-#    elif file_exists == True:
-#      try:
-#        open_settings()
-#        print(f'File exists and has sendto')
-#        return True
-#      except:
-#        print(f'File doesn\'t exists or has no SENDTO')
-#        return False
-
-    
 
 def main():
   add_open_time()

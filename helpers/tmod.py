@@ -14,6 +14,9 @@ from collections import ChainMap # Requires python 3.3
 from re import search
 import json
 
+from helpers.file_location import Location as loc
+from helpers.colors import Colors as c
+
 # Imports installed through pip
 try:
   # pip install pyyaml if needed
@@ -39,31 +42,16 @@ try:
 except:
   pass
 
-# colors 
-def colors():
-  return {
-  'PURPLE' : '\033[95m',
-  'CYAN' : '\033[96m',
-  'DARKCYAN' : '\033[36m',
-  'BLUE'  : '\033[94m',
-  'GREEN' : '\033[92m',
-  'YELLOW' : '\033[93m',
-  'RED' : '\033[91m',
-  'BOLD' : '\033[1m',
-  'UNDERLINE' : '\033[4m',
-  'END' : '\033[0m'
-  }
-
 # File I/O /////////////////////////////////////////
-def home_dir():
-  home = os.path.expanduser('~')
-  return home
+# def home_dir():
+#   home = os.path.expanduser('~')
+#   return home
 
-def get_resource_path(rel_path):
-    dir_of_py_file = os.path.dirname(sys.argv[0])
-    rel_path_to_resource = os.path.join(dir_of_py_file, rel_path)
-    abs_path_to_resource = os.path.abspath(rel_path_to_resource)
-    return abs_path_to_resource
+# def get_resource_path(rel_path):
+#     dir_of_py_file = os.path.dirname(sys.argv[0])
+#     rel_path_to_resource = os.path.join(dir_of_py_file, rel_path)
+#     abs_path_to_resource = os.path.abspath(rel_path_to_resource)
+#     return abs_path_to_resource
 
 def open_file(
     fname: str,
@@ -80,13 +68,13 @@ def open_file(
     the def_content value to it and returns the def_content value
     import os
     """
-    home = home_dir()
+    home = loc.home_dir()
     try:
         if fdest == 'home' or fdest == 'Home':
             with open(f'{home}/{fname}', mode) as path_text:
                 content=path_text.read()
         else:
-            with open(get_resource_path(fname), mode) as text:
+            with open(loc.get_resource_path(fname), mode) as text:
                 content=text.read()
         return content
     except(FileNotFoundError) as e:
@@ -96,7 +84,7 @@ def open_file(
             with open(f'{home}/{fname}', 'w') as output:
                 output.write(def_content)
         else:
-            with open(get_resource_path(fname), 'w') as output:
+            with open(loc.get_resource_path(fname), 'w') as output:
                 output.write(def_content)
         return def_content
 
@@ -110,12 +98,12 @@ def save_file(
     fdest = where to save file, mode = w for write or a for append
     import os
     """
-    home = home_dir()
+    home = loc.home_dir()
     if fdest == 'home' or fdest == 'Home':
         with open(f'{home}/{fname}', mode) as output:
             output.write(content)
     else:
-        with open(get_resource_path(fname), mode) as output:
+        with open(loc.get_resource_path(fname), mode) as output:
             output.write(content)
 def save_file_append(file_,variable,type_='relative'):
     home = os.path.expanduser("~")
@@ -123,7 +111,7 @@ def save_file_append(file_,variable,type_='relative'):
         with open(f'{home}/{file_}', 'a') as output:
             output.write(variable)
     else:
-        with open(get_resource_path(file_), 'a') as output:
+        with open(loc.get_resource_path(file_), 'a') as output:
             output.write(variable)
 
 def save_json(file_,variable,type_='relative'):
@@ -132,7 +120,7 @@ def save_json(file_,variable,type_='relative'):
         with open(f'{home}/{file_}', 'w') as output:
             json.dump(variable,output, sort_keys=True, indent=4)
     else:
-        with open(get_resource_path(file_), 'w') as output:
+        with open(loc.get_resource_path(file_), 'w') as output:
             json.dump(variable,output, sort_keys=True, indent=4)
                 
 def open_json(file_,type_='relative'):
@@ -143,7 +131,7 @@ def open_json(file_,type_='relative'):
                     variable = json.load(fle)
             return variable
         else:
-            with open(get_resource_path(file_), 'r') as fle:
+            with open(loc.get_resource_path(file_), 'r') as fle:
                     variable = json.load(fle)
             return variable
     except(FileNotFoundError, EOFError) as e:
@@ -153,7 +141,7 @@ def open_json(file_,type_='relative'):
             with open(f'{home}/{file_}', 'w') as fle:
                 json.dump(variable, fle)
         else:
-            with open(get_resource_path(file_), 'w') as fle:
+            with open(loc.get_resource_path(file_), 'w') as fle:
                 json.dump(variable, fle)
 
 def save_yaml(
@@ -169,12 +157,12 @@ def save_yaml(
     write or append to the file depending on the mode method
     requires: import os, yaml
     """
-    home = home_dir()
+    home = loc.home_dir()
     if fdest == 'home' or fdest == 'Home':
         with open(f'{home}/{fname}', mode) as output:
             yaml.safe_dump(content,output, sort_keys=True)
     else:
-        with open(get_resource_path(fname), mode) as output:
+        with open(loc.get_resource_path(fname), mode) as output:
             yaml.safe_dump(content,output, sort_keys=True)
 
 def open_yaml(
@@ -190,14 +178,14 @@ def open_yaml(
     the def_content value to it and returns the def_content value
     import os, yaml(pip install pyyaml)
     """
-    home = home_dir()
+    home = loc.home_dir()
     try:
         if fdest == 'home' or fdest == 'Home':
             with open(f'{home}/{fname}', 'r') as fle:
                     content = yaml.safe_load(fle)
             return content
         else:
-            with open(get_resource_path(fname), 'r') as fle:
+            with open(loc.get_resource_path(fname), 'r') as fle:
                     content = yaml.safe_load(fle)
             return content
     except(FileNotFoundError, EOFError) as e:
@@ -206,7 +194,7 @@ def open_yaml(
             with open(f'{home}/{fname}', 'w') as output:
                 yaml.safe_dump(def_content,output, sort_keys=True)
         else:
-            with open(get_resource_path(fname), 'w') as output:
+            with open(loc.get_resource_path(fname), 'w') as output:
                 yaml.safe_dump(def_content,output, sort_keys=True)
         return def_content
   
@@ -218,7 +206,7 @@ def open_log_file(file_,type_='home'):
             with open(f'{home}/Logs/{file_}', 'r') as path_text:
                 variable=path_text.read()
         else:
-            with open(get_resource_path(file_), 'r') as text:
+            with open(loc.get_resource_path(file_), 'r') as text:
                 variable=text.read()
         return variable
     except(FileNotFoundError) as e:
@@ -229,7 +217,7 @@ def open_log_file(file_,type_='home'):
             with open(f'{home}/{file_}', 'w') as output:
                 output.write(variable)
         else:
-            with open(get_resource_path(file_), 'w') as output:
+            with open(loc.get_resource_path(file_), 'w') as output:
                 output.write(variable)
 
 def check_dir(
@@ -242,11 +230,11 @@ def check_dir(
   check to see if specified dir exists.
   Requires import os
   """
-  home = home_dir()
+  home = loc.home_dir()
   if ddest == 'home' or ddest == 'Home':
     dpath = f'{home}/{dname}'
   else:
-    dpath = get_resource_path(dname)
+    dpath = loc.get_resource_path(dname)
   dir_exist = os.path.isdir(dpath)
   return dir_exist
 
@@ -260,11 +248,11 @@ def make_dir(
   Makes the dir specified.
   Requires import os
   """
-  home = home_dir()
+  home = loc.home_dir()
   if ddest == 'home' or ddest == 'Home':
     os.mkdir(f'{home}/{dname}')
   else:
-    os.mkdir(get_resource_path(dname))
+    os.mkdir(loc.get_resource_path(dname))
 
 
 def remove_file(
@@ -277,11 +265,11 @@ def remove_file(
   Removes the file specified
   Requires import os
   """
-  home = home_dir()
+  home = loc.home_dir()
   if fdest == 'home' or fdest == 'Home':
     os.remove(f'{home}/{fname}')
   else:
-    os.remove(get_resource_path(fname))
+    os.remove(loc.get_resource_path(fname))
 
 def check_file_dir(
   fname: str, 
@@ -293,18 +281,18 @@ def check_file_dir(
   Check if file or folder exist returns True or False
   Requires import os
   """
-  home = home_dir()
+  home = loc.home_dir()
   if fdest == 'home' or fdest == 'Home':
     fpath = f'{home}/{fname}'
   else:
-    fpath = get_resource_path(fname)
+    fpath = loc.get_resource_path(fname)
   file_exist = os.path.exists(fpath)
   return file_exist
 
 # Encryption
 
 def gen_key(fname: str,):
-  home = home_dir()
+  home = loc.home_dir()
   key = Fernet.generate_key()
   with open(f'{home}/{fname}', 'wb')as fkey:
     fkey.write(key)
@@ -432,7 +420,7 @@ def last_n_lines(fname, lines, fdest='relative'):
         for line in (file.readlines() [-lines:]):
           file_lines.append(line)
     else:
-      with open(get_resource_path(fname), 'r') as file:
+      with open(loc.get_resource_path(fname), 'r') as file:
         for line in (file.readlines() [-lines:]):
           file_lines.append(line)
     file_lines_text = (''.join(file_lines))
@@ -523,7 +511,7 @@ def check_file_age(fname, fdest='relative'):
   if fdest == 'home' or fdest == 'Home':
     file_info= os.stat(f'{home}/{fname}')
   else:
-    file_info= os.stat(get_resource_path(fname))
+    file_info= os.stat(loc.get_resource_path(fname))
   now = datetime.now().timestamp()
   modified = int(file_info.st_mtime)
   difference_hour = int(((now - modified)/60)/60)
@@ -578,14 +566,14 @@ def input_list(
   want to add to a list.
   Requires: doesn't require any special imports
   """
-  c = colors()
+  # c = colors()
   print(
-    f'\n{c["PURPLE"]}{c["BOLD"]}'
-    f'{subject.capitalize()}{c["END"]}\n'
+    f'\n{c.PURPLE}{c.BOLD}'
+    f'{subject.capitalize()}{c.END}\n'
     f'You can add as many items as you like.\n'
     f'But you must add at least 1 item.\n'
     f'When your done adding, Type ' 
-    f'{c["RED"]}{c["BOLD"]}{outword}{c["END"]}\n'
+    f'{c.RED}{c.BOLD}{outword}{c.END}\n'
   )
   item_list = []
   while True:
@@ -600,12 +588,12 @@ def input_list(
         break
       if item == outword or item == outword.capitalize() or item == outword.upper():
         print(
-          f'{c["RED"]}{c["BOLD"]}You need to enter at least 1 ' 
-          f'{in_type}{c["END"]}')
+          f'{c.RED}{c.BOLD}You need to enter at least 1 ' 
+          f'{in_type}{c.END}')
       else:
         print(
-          f'{c["RED"]}{c["BOLD"]}This is not a valid ' 
-          f'{in_type}{c["END"]}')
+          f'{c.RED}{c.BOLD}This is not a valid ' 
+          f'{in_type}{c.END}')
       item: str = input(f"Enter the {subject} {description}: ")
     if ((
       item == outword or 
@@ -616,56 +604,56 @@ def input_list(
       length = len(item_list)
       print(
         f'\nYou have added {length} item(s), ' 
-        f'Because you typed {c["RED"]}{c["BOLD"]}{item}{c["END"]}\n'
+        f'Because you typed {c.RED}{c.BOLD}{item}{c.END}\n'
         f'That will complete your selection for "{subject.capitalize()}".')
       break
     else:
-      print(f'You added {c["CYAN"]}{item}{c["END"]}')
+      print(f'You added {c.CYAN}{item}{c.END}')
       item_list.append(item)
-    print(f'{c["CYAN"]}{item_list}{c["END"]}')
+    print(f'{c.CYAN}{item_list}{c.END}')
   return item_list
 
-def input_single(
-  in_message: str,
-  in_type: str ='email',
-  fdest: str = 'home',
-  max_number: int = 200
-  ):
-  """
-  in_message = the message you want in your input string,
-  in_type = the type of input field. Choices are 
-  email, file, int, time, password
-  This is for a single item input. This uses "validate_input"
-  to verify that items entered meet requirements for that type of input
-  """
-  c = colors()
-  if in_type == 'int' or in_type == 'float':
-    item = input(f'{in_message}(Max {max_number}): ')
-  else:
-   item = input(f'{in_message}: ')
-  while (validate_input(
-    item = item, 
-    in_type = in_type,
-    fdest = fdest,
-    max_number = max_number
-    ) == False):
-    print(
-      f'{c["RED"]}{c["BOLD"]}'
-      f'This is not a valid {in_type}{c["END"]}')
-    if in_type == 'int' or in_type == 'float':
-      item = input(f'{in_message}(max {max_number}): ')
-    else:
-      item = input(f'{in_message}: ')
-  if in_type == 'password':
-    print(f'{c["CYAN"]}******{c["END"]}')
-  else:
-    print(f'You entered {c["CYAN"]}{item}{c["END"]}')
-  if in_type == 'int':
-    return int(item)
-  elif in_type == 'float':
-    return float(item)
-  else:
-    return item
+# def input_single(
+#   in_message: str,
+#   in_type: str ='email',
+#   fdest: str = 'home',
+#   max_number: int = 200
+#   ):
+#   """
+#   in_message = the message you want in your input string,
+#   in_type = the type of input field. Choices are 
+#   email, file, int, time, password
+#   This is for a single item input. This uses "validate_input"
+#   to verify that items entered meet requirements for that type of input
+#   """
+#   c = colors()
+#   if in_type == 'int' or in_type == 'float':
+#     item = input(f'{in_message}(Max {max_number}): ')
+#   else:
+#    item = input(f'{in_message}: ')
+#   while (validate_input(
+#     item = item, 
+#     in_type = in_type,
+#     fdest = fdest,
+#     max_number = max_number
+#     ) == False):
+#     print(
+#       f'{c["RED"]}{c["BOLD"]}'
+#       f'This is not a valid {in_type}{c["END"]}')
+#     if in_type == 'int' or in_type == 'float':
+#       item = input(f'{in_message}(max {max_number}): ')
+#     else:
+#       item = input(f'{in_message}: ')
+#   if in_type == 'password':
+#     print(f'{c["CYAN"]}******{c["END"]}')
+#   else:
+#     print(f'You entered {c["CYAN"]}{item}{c["END"]}')
+#   if in_type == 'int':
+#     return int(item)
+#   elif in_type == 'float':
+#     return float(item)
+#   else:
+#     return item
 
 def validate_input(
   item:str,
@@ -722,95 +710,95 @@ def validate_input(
     return False
 
 ## Wizard setup
-def config_setup(conf_dir: str):
-  """
-  conf_dir = Configuration dir. This would 
-  normally be in the .config/progName,
-  This commandline wizard creates the 
-  program config dir and populates the 
-  setup configuration file. Sets up username 
-  and password for email notifications
-  """
-  c = colors()
-  home = home_dir()
-  make_dir(conf_dir)
+# def config_setup(conf_dir: str):
+#   """
+#   conf_dir = Configuration dir. This would 
+#   normally be in the .config/progName,
+#   This commandline wizard creates the 
+#   program config dir and populates the 
+#   setup configuration file. Sets up username 
+#   and password for email notifications
+#   """
+#   c = colors()
+#   home = loc.home_dir()
+#   make_dir(conf_dir)
 
-  print(
-    f'\n{c["YELLOW"]}{c["BOLD"]}We could not find any ' 
-    f'configuration folder{c["END"]}'
-    f'\n{c["GREEN"]}This Wizard will ask some questions ' 
-    f'to setup the configuration needed for the script to function.{c["END"]}'
-    f'\n{c["GREEN"]}{c["BOLD"]}This configuration wizard will only run once.{c["END"]}\n'
-    f'\n{c["GREEN"]}The first 2 questions are going ' 
-    f'to be about your email and password you are using to send. '
-    f'\nThis login information will be stored on your local ' 
-    f'computer encrypted seperate '
-    f'\nfrom the rest of the configuration. ' 
-    f'This is not viewable by browsing the filesystem{c["END"]}'
-  )
+#   print(
+#     f'\n{c["YELLOW"]}{c["BOLD"]}We could not find any ' 
+#     f'configuration folder{c["END"]}'
+#     f'\n{c["GREEN"]}This Wizard will ask some questions ' 
+#     f'to setup the configuration needed for the script to function.{c["END"]}'
+#     f'\n{c["GREEN"]}{c["BOLD"]}This configuration wizard will only run once.{c["END"]}\n'
+#     f'\n{c["GREEN"]}The first 2 questions are going ' 
+#     f'to be about your email and password you are using to send. '
+#     f'\nThis login information will be stored on your local ' 
+#     f'computer encrypted seperate '
+#     f'\nfrom the rest of the configuration. ' 
+#     f'This is not viewable by browsing the filesystem{c["END"]}'
+#   )
 
-  gen_key(f'{conf_dir}/.info.key')
-  key = open_file(
-      fname = f'{conf_dir}/.info.key', 
-      fdest = "home",
-      mode ="rb"
-      )
+#   gen_key(f'{conf_dir}/.info.key')
+#   key = open_file(
+#       fname = f'{conf_dir}/.info.key', 
+#       fdest = "home",
+#       mode ="rb"
+#       )
 
-  email = input_single(
-    in_message = "\nEnter your email",
-    in_type = 'email'
-   )
-  pas = input_single(
-    in_message = "\nEnter your password",
-    in_type = 'password')
-  lo = {email:pas}
-  save_yaml(
-    fname = f'{conf_dir}/.cred.yaml',
-    fdest = 'home',
-    content = lo
-    )
-  encrypt(
-    key = key,
-    fname = f'{conf_dir}/.cred.yaml',
-    e_fname = f'{conf_dir}/.cred_en.yaml',
-    fdest = 'home'
-    )
-  remove_file(f'{conf_dir}/.cred.yaml')
-  run = input_single(
-    in_message ="Enter the time to run the script daily(Example: 05:00)",
-    in_type = "time"
-    )
-  numb_lines = input_single(
-    in_message='Enter the number of lines from the end of log file to send',
-    in_type = 'int',
-    max_number = 400
-    )
-  send_list = input_list(
-    subject= "email address",
-    description = 'to send to (example@gmail.com)',
-    in_type = 'email')
-  log_list = input_list(
-    subject= "log file",
-    description = 'to check relative to your home dir (Example: Logs/net_backup.log)',
-    in_type = 'file'
-    )
-  load = {
-    'runtime': run,
-    'lines': int(numb_lines),
-    'sendto': send_list,
-    'logs': log_list
-    }
-  save_yaml(
-    fname =f'{conf_dir}/emailog_set.yaml',
-    fdest = 'home',
-    content = load)
-  print(
-    f'\n{c["YELLOW"]}{c["BOLD"]}This completes the wizard{c["END"]}'
-    f'\nThe configuration file has been written to disk'
-    f'\nIf you want to change the settings you can edit ' 
-    f'{c["CYAN"]}{c["BOLD"]}{home}/{conf_dir}/emailog_set.yaml{c["END"]}'
-    f'\n{c["GREEN"]}{c["BOLD"]}This wizard ' 
-    f'won\'t run any more, So the script can ' 
-    f'now be run automatically{c["END"]}\n'
-    f'\n{c["CYAN"]}{c["BOLD"]}You can stop ' 
-    f'the script by typing Ctrl + C{c["END"]}\n')
+#   email = input_single(
+#     in_message = "\nEnter your email",
+#     in_type = 'email'
+#    )
+#   pas = input_single(
+#     in_message = "\nEnter your password",
+#     in_type = 'password')
+#   lo = {email:pas}
+#   save_yaml(
+#     fname = f'{conf_dir}/.cred.yaml',
+#     fdest = 'home',
+#     content = lo
+#     )
+#   encrypt(
+#     key = key,
+#     fname = f'{conf_dir}/.cred.yaml',
+#     e_fname = f'{conf_dir}/.cred_en.yaml',
+#     fdest = 'home'
+#     )
+#   remove_file(f'{conf_dir}/.cred.yaml')
+#   run = input_single(
+#     in_message ="Enter the time to run the script daily(Example: 05:00)",
+#     in_type = "time"
+#     )
+#   numb_lines = input_single(
+#     in_message='Enter the number of lines from the end of log file to send',
+#     in_type = 'int',
+#     max_number = 400
+#     )
+#   send_list = input_list(
+#     subject= "email address",
+#     description = 'to send to (example@gmail.com)',
+#     in_type = 'email')
+#   log_list = input_list(
+#     subject= "log file",
+#     description = 'to check relative to your home dir (Example: Logs/net_backup.log)',
+#     in_type = 'file'
+#     )
+#   load = {
+#     'runtime': run,
+#     'lines': int(numb_lines),
+#     'sendto': send_list,
+#     'logs': log_list
+#     }
+#   save_yaml(
+#     fname =f'{conf_dir}/emailog_set.yaml',
+#     fdest = 'home',
+#     content = load)
+#   print(
+#     f'\n{c["YELLOW"]}{c["BOLD"]}This completes the wizard{c["END"]}'
+#     f'\nThe configuration file has been written to disk'
+#     f'\nIf you want to change the settings you can edit ' 
+#     f'{c["CYAN"]}{c["BOLD"]}{home}/{conf_dir}/emailog_set.yaml{c["END"]}'
+#     f'\n{c["GREEN"]}{c["BOLD"]}This wizard ' 
+#     f'won\'t run any more, So the script can ' 
+#     f'now be run automatically{c["END"]}\n'
+#     f'\n{c["CYAN"]}{c["BOLD"]}You can stop ' 
+#     f'the script by typing Ctrl + C{c["END"]}\n')
