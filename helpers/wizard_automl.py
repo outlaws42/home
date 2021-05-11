@@ -1,13 +1,13 @@
-from helpers.tmod import (
-  check_file_dir, gen_key, make_dir, open_file, open_yaml,
-  save_yaml, input_list,  remove_file,
-  encrypt, check_dir
-  )
 from helpers.colors import Colors as c
-from helpers.file_location import Location as loc
+from helpers.file import (
+  Location as loc, FileInfo as fi, FileEdit as fe
+  )
+from helpers.io import IO as io
+from helpers.inp import Inp as inp
+from helpers.encrypt import Encryption as en
 
 def open_settings(conf_dir, conf_file):
-  settings = open_yaml(
+  settings = io.open_yaml(
     fname = f"{conf_dir}/{conf_file}", 
     fdest = "home"
     )
@@ -15,7 +15,7 @@ def open_settings(conf_dir, conf_file):
   return settings['SENDTO']
 
 def automl_config_exist(conf_dir: str, conf_file: str):
-   file_exists = check_file_dir(
+   file_exists = fi.check_file_dir(
      fname = f'{conf_dir}/{conf_file}', 
      fdest = 'home'
      )
@@ -38,7 +38,7 @@ def file_set(
   conf_dir: str,
   conf_file: str
   ):
-  file_exists = check_file_dir(f'{conf_dir}/{conf_file}')
+  file_exists = fi.check_file_dir(f'{conf_dir}/{conf_file}')
   if file_exists == False:
     load = {
       'USE_API': True,
@@ -51,7 +51,7 @@ def file_set(
       'SENDTO': send_list,
       }
   else:
-    loaded = open_yaml(
+    loaded = io.open_yaml(
       fname = f'{conf_dir}/{conf_file}',
       fdest = 'home'
       )
@@ -79,10 +79,10 @@ def config_setup(conf_dir: str, conf_file: str):
   """
   # c = colors()
   home = loc.home_dir()
-  dir_exists = check_dir(conf_dir)
+  dir_exists = fi.check_dir(conf_dir)
 
   if dir_exists == False:
-    make_dir(conf_dir)
+    fe.make_dir(conf_dir)
 
   # file_exists = check_file_dir(f'{conf_dir}/{conf_file}')
 
@@ -101,41 +101,41 @@ def config_setup(conf_dir: str, conf_file: str):
   )
   # sento_exists = automl_config_exist(conf_dir, conf_file)
 
-  kf_exists = check_file_dir(f'{conf_dir}/info.key')
-  cred_exists = check_file_dir(f'{conf_dir}/.cred_en.yaml')
+  kf_exists = fi.check_file_dir(f'{conf_dir}/info.key')
+  cred_exists = fi.check_file_dir(f'{conf_dir}/.cred_en.yaml')
 
   if kf_exists == False and cred_exists == False:
-    gen_key(f'{conf_dir}/.info.key')
-    key = open_file(
+    en.gen_key(f'{conf_dir}/.info.key')
+    key = io.open_file(
         fname = f'{conf_dir}/.info.key', 
         fdest = "home",
         mode ="rb"
         )
 
-    email = input_single(
+    email = inp.input_single(
       in_message = "\nEnter your email",
       in_type = 'email'
     )
-    pas = input_single(
+    pas = inp.input_single(
       in_message = "\nEnter your password",
       in_type = 'password')
     lo = {email:pas}
-    save_yaml(
+    io.save_yaml(
       fname = f'{conf_dir}/.cred.yaml',
       fdest = 'home',
       content = lo
       )
-    encrypt(
+    en.encrypt(
       key = key,
       fname = f'{conf_dir}/.cred.yaml',
       e_fname = f'{conf_dir}/.cred_en.yaml',
       fdest = 'home'
       )
-    remove_file(f'{conf_dir}/.cred.yaml')
+    fe.remove_file(f'{conf_dir}/.cred.yaml')
   else:
     print('cred already exists')
 
-  send_list = input_list(
+  send_list = inp.input_list(
     subject= "email address",
     description = 'to send to (example@gmail.com)',
     in_type = 'email')
@@ -145,7 +145,7 @@ def config_setup(conf_dir: str, conf_file: str):
     conf_dir = conf_dir,
     conf_file = conf_file
     )
-  save_yaml(
+  io.save_yaml(
     fname =f'{conf_dir}/{conf_file}',
     fdest = 'home',
     content = content)

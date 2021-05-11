@@ -1,4 +1,6 @@
-from helpers.file_location import Location as loc
+from yaml import safe_dump, safe_load
+from json import dump, load
+from helpers.file import Location as loc
 
 class IO():
   def open_file(
@@ -54,7 +56,7 @@ class IO():
           with open(loc.get_resource_path(fname), mode) as output:
               output.write(content)
   def save_file_append(file_,variable,type_='relative'):
-      home = os.path.expanduser("~")
+      home = loc.home_dir()
       if type_ == 'home' or type_ == 'Home':
           with open(f'{home}/{file_}', 'a') as output:
               output.write(variable)
@@ -62,35 +64,51 @@ class IO():
           with open(loc.get_resource_path(file_), 'a') as output:
               output.write(variable)
 
-  def save_json(file_,variable,type_='relative'):
-      home = os.path.expanduser("~")
-      if type_ == 'home' or type_ == 'Home':
-          with open(f'{home}/{file_}', 'w') as output:
-              json.dump(variable,output, sort_keys=True, indent=4)
-      else:
-          with open(loc.get_resource_path(file_), 'w') as output:
-              json.dump(variable,output, sort_keys=True, indent=4)
-                  
-  def open_json(file_,type_='relative'):
-      home = os.path.expanduser("~")
-      try:
-          if type_ == 'home' or type_ == 'Home':
-              with open(f'{home}/{file_}', 'r') as fle:
-                      variable = json.load(fle)
-              return variable
-          else:
-              with open(loc.get_resource_path(file_), 'r') as fle:
-                      variable = json.load(fle)
-              return variable
-      except(FileNotFoundError, EOFError) as e:
-          print(e)
-          variable = 0
-          if type_ == 'home' or type_ == 'Home':
-              with open(f'{home}/{file_}', 'w') as fle:
-                  json.dump(variable, fle)
-          else:
-              with open(loc.get_resource_path(file_), 'w') as fle:
-                  json.dump(variable, fle)
+  def save_json(
+    fname: str,
+    content: str,
+    fdest: str = 'relative'
+    ):
+    home = loc.home_dir()
+    if fdest == 'home' or fdest == 'Home':
+        with open(f'{home}/{fname}', 'w') as output:
+            dump(content,output, sort_keys=True, indent=4)
+    else:
+        with open(loc.get_resource_path(fname), 'w') as output:
+            dump(content,output, sort_keys=True, indent=4)
+                
+  def open_json(
+    fname: str,
+    fdest: str = 'relative',
+    def_content = {'key': 'value'},
+    ):
+    """
+    fname = filename, fdest = file destination, 
+    def_content = default value if the file doesn't exist
+    opens the file if it exists and returns the contents
+    if it doesn't exitst it creates it writes 
+    the def_content value to it and returns the def_content value
+    requires: import os, yaml
+    """
+    home = loc.home_dir()
+    try:
+        if fdest == 'home' or fdest == 'Home':
+            with open(f'{home}/{fname}', 'r') as fle:
+                    content = load(fle)
+            return content
+        else:
+            with open(loc.get_resource_path(fname), 'r') as fle:
+                    content = load(fle)
+            return content
+    except(FileNotFoundError, EOFError) as e:
+        print(e)
+        if fdest == 'home' or fdest == 'Home':
+            with open(f'{home}/{fname}', 'w') as output:
+                dump(def_content, output, sort_keys=True, indent=4)
+        else:
+            with open(loc.get_resource_path(fname), 'w') as output:
+                dump(def_content, output, sort_keys=True, indent=4)
+        return def_content
 
   def save_yaml(
       fname: str,
@@ -108,10 +126,10 @@ class IO():
       home = loc.home_dir()
       if fdest == 'home' or fdest == 'Home':
           with open(f'{home}/{fname}', mode) as output:
-              yaml.safe_dump(content,output, sort_keys=True)
+              safe_dump(content,output, sort_keys=True)
       else:
           with open(loc.get_resource_path(fname), mode) as output:
-              yaml.safe_dump(content,output, sort_keys=True)
+              safe_dump(content,output, sort_keys=True)
 
   def open_yaml(
       fname: str,
@@ -130,40 +148,19 @@ class IO():
       try:
           if fdest == 'home' or fdest == 'Home':
               with open(f'{home}/{fname}', 'r') as fle:
-                      content = yaml.safe_load(fle)
+                      content = safe_load(fle)
               return content
           else:
               with open(loc.get_resource_path(fname), 'r') as fle:
-                      content = yaml.safe_load(fle)
+                      content = safe_load(fle)
               return content
       except(FileNotFoundError, EOFError) as e:
           print(e)
           if fdest == 'home' or fdest == 'Home':
               with open(f'{home}/{fname}', 'w') as output:
-                  yaml.safe_dump(def_content,output, sort_keys=True)
+                  safe_dump(def_content,output, sort_keys=True)
           else:
               with open(loc.get_resource_path(fname), 'w') as output:
-                  yaml.safe_dump(def_content,output, sort_keys=True)
+                  safe_dump(def_content,output, sort_keys=True)
           return def_content
     
-                
-  def open_log_file(file_,type_='home'):
-      home = os.path.expanduser("~")
-      try:
-          if type_ == 'home' or type_ == 'Home':
-              with open(f'{home}/Logs/{file_}', 'r') as path_text:
-                  variable=path_text.read()
-          else:
-              with open(loc.get_resource_path(file_), 'r') as text:
-                  variable=text.read()
-          return variable
-      except(FileNotFoundError) as e:
-          print(e)
-          print('It is reading here')
-          variable = '0'
-          if type_ == 'home' or type_ == 'Home':
-              with open(f'{home}/{file_}', 'w') as output:
-                  output.write(variable)
-          else:
-              with open(loc.get_resource_path(file_), 'w') as output:
-                  output.write(variable)
