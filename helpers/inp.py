@@ -1,6 +1,7 @@
 from re import search
 from datetime import datetime
 from helpers.colors import Colors as c
+from helpers.file import FileInfo as fi
 
 class Inp():
   
@@ -137,7 +138,7 @@ class Inp():
       if not item:
         return False
       else:
-        return check_file_dir(item, fdest)
+        return fi.check_file_dir(item, fdest)
     elif in_type == 'password':
       if not item:
         return False

@@ -20,13 +20,10 @@ def automl_config_exist(conf_dir: str, conf_file: str):
      fdest = 'home'
      )
    if file_exists == False:
-     print(file_exists)
      config_setup(conf_dir, conf_file)
    elif file_exists == True:
      try:
-       test = open_settings(conf_dir, conf_file)
-       print(f'File exists and has SENDTO')
-       print(test)
+       open_settings(conf_dir, conf_file)
        return True
      except Exception as e:
        print(e)
