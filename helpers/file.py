@@ -1,6 +1,6 @@
 from datetime import datetime
 from os import stat, path, mkdir, remove
-from sys import argv
+import sys
 
 
 class Location():
@@ -10,7 +10,7 @@ class Location():
     return home
 
   def get_resource_path(rel_path):
-    dir_of_py_file = path.dirname(argv[0])
+    dir_of_py_file = path.dirname(sys.argv[0])
     rel_path_to_resource = path.join(dir_of_py_file, rel_path)
     abs_path_to_resource = path.abspath(rel_path_to_resource)
     return abs_path_to_resource

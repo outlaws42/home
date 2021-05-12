@@ -6,7 +6,6 @@ from helpers.file import FileInfo as fi
 class Inp():
   
   def input_list(
-    self,
     subject: str, 
     description: str,
     in_type: str = 'email',

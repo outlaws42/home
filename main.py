@@ -4,9 +4,11 @@ from fastapi import FastAPI
 from bson import json_util
 from pymongo import MongoClient
 import json
-from bson.codec_options import CodecOptions
-from datetime import datetime, timedelta, date, time
-from config.settings import DB_URI,DATABASE
+# from bson.codec_options import CodecOptions
+# from datetime import datetime, timedelta, date, time
+# from config.settings import DB_URI,DATABASE
+from config.conf import conf_dir, conf_file
+from helpers.wizard_rest import config_exist, config_setup, open_settings
 from helpers import (get_certain_dated_entry_db, get_latest_with_tz_db, 
      check_for_delay_time, list_collection_with_tz_db,get_latest_named_with_tz_db, 
      put_in_dict, timestamp_from_datetime)
@@ -14,9 +16,22 @@ from helpers import (get_certain_dated_entry_db, get_latest_with_tz_db,
 # Init app
 app = FastAPI()
 
+try:
+  file_exists = config_exist(conf_dir, conf_file)
+  if file_exists == False:
+      print(file_exists)
+      config_setup(conf_dir, conf_file)
+  else:
+    settings = open_settings(conf_dir, conf_file)
+except Exception as e:
+      print(e)
+
+db_uri = settings['DB_URI']
+database = settings['DATABASE']
+
 # Database
-mongo = MongoClient(DB_URI)
-db = mongo[DATABASE]
+mongo = MongoClient(db_uri)
+db = mongo[database]
 
 
 @app.get('/')

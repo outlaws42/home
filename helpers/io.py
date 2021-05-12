@@ -163,4 +163,3 @@ class IO():
               with open(loc.get_resource_path(fname), 'w') as output:
                   safe_dump(def_content,output, sort_keys=True)
           return def_content
-    

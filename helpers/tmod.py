@@ -14,7 +14,7 @@ from collections import ChainMap # Requires python 3.3
 from re import search
 import json
 
-from helpers.file_location import Location as loc
+from helpers.file import Location as loc
 from helpers.colors import Colors as c
 
 # Imports installed through pip
@@ -353,11 +353,11 @@ def list_of_items(item,range_num):
             list_.append(temp)
         return list_
 
-def add_to_list(list_in,list_out):
-    # takes a list of items
-  for i in range(len(list_in)):
-    list_out.append(list_in[i])
-  return list_out
+# def add_to_list(list_in,list_out):
+#     # takes a list of items
+#   for i in range(len(list_in)):
+#     list_out.append(list_in[i])
+#   return list_out
 
 def dict_to_list(list_,dictionary_):
         # Convert dictionary to a list
@@ -368,13 +368,13 @@ def dict_to_list(list_,dictionary_):
             list_.append(temp)
         return list_.sort()
 
-def combine_dict(dict_list):
-        """
-        Takes a list of dictionarys and combines into one dictionary
-        requires from collections import ChainMap and python 3.3 or later
-        """
-        current = dict(ChainMap(*dict_list))
-        return current
+# def combine_dict(dict_list):
+#         """
+#         Takes a list of dictionarys and combines into one dictionary
+#         requires from collections import ChainMap and python 3.3 or later
+#         """
+#         current = dict(ChainMap(*dict_list))
+#         return current
 
 def group_list(list_, positions, start=0):
     """

@@ -11,13 +11,15 @@ version = '2021-05-11'
 #   check_file_dir
 #   )
 from helpers.wizard_automl import (
-  config_setup, open_settings, automl_config_exist
+  config_setup, open_settings, config_exist
   )
 from helpers.io import IO as io
 from helpers.email import Mail as ml
 from helpers.encrypt import Encryption as en
+from config.conf import conf_dir, conf_file
 from time import sleep
 from requests import get
+
 
 refresh = 60   # In sec.
 time_limit_open = 30
@@ -25,8 +27,6 @@ time_limit_error = 90
 door_open = 'Open'
 mode = 1  # 0 = Debug mail, 1 = production
 time_increment = 1  # In min.
-conf_dir = '.config/home'
-conf_file = 'settings.yaml'
 open_time_file = f'{conf_dir}/.open_time'
 accum_file = f'{conf_dir}/.open_time_accum'
 
@@ -89,7 +89,7 @@ def mail_info(
   ):
   kf = f"{conf_dir}/.info.key"
   ef = f"{conf_dir}/.cred_en.yaml"
-  st = open_settings(conf_dir, conf_file)
+  st = io.open_settings(conf_dir, conf_file)
   body = (
     f'\n Garage: {final_status}'
     f'( {time_collective} min notifier)'
@@ -127,7 +127,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        file_exists = automl_config_exist(conf_dir, conf_file)
+        file_exists = config_exist(conf_dir, conf_file)
         if file_exists == False:
           print(file_exists)
           config_setup(conf_dir, conf_file)

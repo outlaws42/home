@@ -31,14 +31,8 @@ def config_exist(
     #  config_setup(conf_dir, conf_file)
     return False
    elif file_exists == True:
-     try:
-       settings = open_settings(conf_dir, conf_file)
-       settings[f'{key}']
-       return True
-     except Exception as e:
-       print(e)
-       print(f'File doesn\'t exists or has no SENDTO')
-       return False
+    return True
+
 
 def file_set(
   send_list: list,
