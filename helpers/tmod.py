@@ -345,13 +345,18 @@ def html_info(tag,url):
         print(final_status)
     return final_status
 
-def list_of_items(item,range_num):
-        # forecast high / low temp for 3 days    
-        list_ = []
+def list_of_items(item,range_num: int):
+        """
+        item = the data you want added
+        range_num = how many items to add
+        Add items to a list in 
+        the range of range_numb
+        """    
+        items_list = []
         for i in range(range_num):
             temp = item
-            list_.append(temp)
-        return list_
+            items_list.append(temp)
+        return items_list
 
 # def add_to_list(list_in,list_out):
 #     # takes a list of items
@@ -359,14 +364,16 @@ def list_of_items(item,range_num):
 #     list_out.append(list_in[i])
 #   return list_out
 
-def dict_to_list(list_,dictionary_):
-        # Convert dictionary to a list
-        temp = []
-        list_ = []
-        for key, value in dictionary_.items():
-            temp = [key,value]
-            list_.append(temp)
-        return list_.sort()
+# def dict_to_list(dictionary: dict):
+#   """
+#    Convert dictionary to a list
+#   """
+#   temp = []
+#   list_name = []
+#   for key, value in dictionary.items():
+#     temp = [key,value]
+#     list_name.append(temp)
+#   return list_name.sort()
 
 # def combine_dict(dict_list):
 #         """

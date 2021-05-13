@@ -163,3 +163,31 @@ class IO():
               with open(loc.get_resource_path(fname), 'w') as output:
                   safe_dump(def_content,output, sort_keys=True)
           return def_content
+
+  def last_n_lines(
+    fname: str, 
+    lines: int, 
+    fdest: str ='relative'
+    ):
+    """
+    Gets the last so many lines of a text 
+    file and returns those lines in text.
+    Arguments = filename, number of lines,
+    file destination
+    """
+    home = loc.home_dir()
+    try:
+      file_lines = []
+      if fdest == 'home' or fdest == 'Home':
+        with open(f'{home}/{fname}') as file:
+          for line in (file.readlines() [-lines:]):
+            file_lines.append(line)
+      else:
+        with open(loc.get_resource_path(fname), 'r') as file:
+          for line in (file.readlines() [-lines:]):
+            file_lines.append(line)
+      file_lines_text = (''.join(file_lines))
+      return file_lines_text
+    except(FileNotFoundError) as e:
+      print(e)
+      return 'file not found'
