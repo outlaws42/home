@@ -105,3 +105,5 @@ class FileEdit():
     else:
       remove(Location.get_resource_path(fname))
 
+if __name__ == "__main__":
+  pass

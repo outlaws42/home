@@ -6,7 +6,6 @@ import paho.mqtt.client as mqtt
 from datetime import datetime
 from pymongo import MongoClient
 import time
-from config.settings import BROKER_ADDRESS, DB_URI, DATABASE
 from helpers.wizard_rest import config_exist, config_setup, open_settings
 from config.conf import conf_dir, conf_file
 

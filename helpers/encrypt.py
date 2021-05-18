@@ -80,3 +80,6 @@ class Encryption():
     decrypt_file = keyf.decrypt(encrypted)
     usr = decrypt_file.decode().split(':')
     return [usr[0],usr[1]]
+
+if __name__ == "__main__":
+  app = Encryption()

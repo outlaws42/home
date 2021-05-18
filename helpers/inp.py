@@ -6,6 +6,7 @@ from helpers.file import FileInfo as fi
 class Inp():
   
   def input_list(
+    self,
     subject: str, 
     description: str,
     in_type: str = 'email',
@@ -22,7 +23,6 @@ class Inp():
     want to add to a list.
     Requires: doesn't require any special imports
     """
-    # c = colors()
     print(
       f'\n{c.PURPLE}{c.BOLD}'
       f'{subject.capitalize()}{c.END}\n'
@@ -83,7 +83,6 @@ class Inp():
     This is for a single item input. This uses "validate_input"
     to verify that items entered meet requirements for that type of input
     """
-    # c = colors()
     if in_type == 'int' or in_type == 'float':
       item = input(f'{in_message}(Max {max_number}): ')
     else:
@@ -165,3 +164,6 @@ class Inp():
         return False
     else:
       return False
+
+if __name__ == "__main__":
+  app = Inp()

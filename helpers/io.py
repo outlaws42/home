@@ -191,3 +191,6 @@ class IO():
     except(FileNotFoundError) as e:
       print(e)
       return 'file not found'
+
+if __name__ == "__main__":
+  app = IO()

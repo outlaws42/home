@@ -29,3 +29,6 @@ class Mail():
     except Exception as e:
       print('Could not send email because')
       print(e)
+
+if __name__ == "__main__":
+  app = Mail()

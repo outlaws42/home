@@ -52,3 +52,6 @@ def group_list(
   while start <= len(lname) - positions:
     yield lname[start:start + positions]
     start += positions
+
+if __name__ == "__main__":
+  app = DictList()
