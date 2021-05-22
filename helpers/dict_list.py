@@ -3,6 +3,7 @@ from collections import ChainMap
 class DictList():
 
   def add_to_list(
+    self,
     list_in: list,
     list_out: list
   ):
@@ -16,17 +17,17 @@ class DictList():
       list_out.append(list_in[i])
     return list_out
 
-  def combine_dict(dict_list: list):
-          """
-          Takes a list of dictionaries 
-          and combines into one dictionary
-          requires from collections import ChainMap 
-          and python 3.3 or later
-          """
-          current = dict(ChainMap(*dict_list))
-          return current
+  def combine_dict(self, dict_list: list):
+    """
+    Takes a list of dictionaries 
+    and combines into one dictionary
+    requires from collections import ChainMap 
+    and python 3.3 or later
+    """
+    current = dict(ChainMap(*dict_list))
+    return current
 
-  def dict_to_list(dictionary: dict):
+  def dict_to_list(self,dictionary: dict):
     """
     Convert dictionary to a list
     """
@@ -38,6 +39,7 @@ class DictList():
     return list_name.sort()
 
 def group_list(
+  self,
   lname: list, 
   positions: int, 
   start: int = 0

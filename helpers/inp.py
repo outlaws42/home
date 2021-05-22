@@ -1,7 +1,9 @@
 from re import search
 from datetime import datetime
 from helpers.colors import Colors as c
-from helpers.file import FileInfo as fi
+from helpers.file import FileInfo
+
+fi = FileInfo()
 
 class Inp():
   
@@ -86,7 +88,7 @@ class Inp():
     if in_type == 'int' or in_type == 'float':
       item = input(f'{in_message}(Max {max_number}): ')
     else:
-     item = input(f'{in_message}: ')
+      item = input(f'{in_message}: ')
     while (self.validate_input(
       item = item, 
       in_type = in_type,
@@ -110,9 +112,48 @@ class Inp():
       return float(item)
     else:
       return item
+  
+  def input_choice(
+    self,
+    in_message: str,
+    choices: dict = {1: 'option 1', 2: 'option 2'}, 
+    default_choice: int = 1
+    ):
+    """
+    in_message = the message you want in your input string,\n
+    choices = dictionary of options for your choices.
+    The key being a int the user will select. The value
+    being the option used\n
+    default_choice = This is the choice that will be
+    selected if the user doesn't choose any option. 
+
+    """
+    print(f"\n{c.BLUE}{c.BOLD}Select a item from the following items{c.END}" )
+    for key, value in choices.items():
+      print(f"{c.BOLD}{key}{c.END} = {c.YELLOW}{c.BOLD}{value}{c.END}")
+    try:
+      item = input(
+       f'{c.BOLD}{in_message} {c.GREEN}(default {default_choice}):{c.END} ') or default_choice
+      item = int(item)
+    except ValueError:
+      print('select a valid option')
+      item = 1000
+    while (item not in choices.keys()):
+      try:
+        item = input(
+       f'{c.BOLD}{in_message} {c.GREEN}(default {default_choice}):{c.END} ') or default_choice
+        item = int(item)
+      except ValueError:
+        print('Select a valid option')
+        item = 1000
+    choice = choices[item]
+    print(
+      f'{c.BOLD}You chose {c.YELLOW}{choice}{c.END}')
+    return choice
 
   def validate_input(
-    item:str,
+    self,
+    item: str,
     in_type: str,
     fdest: str = 'home',
     max_number: int = 200 
@@ -128,6 +169,20 @@ class Inp():
     if in_type == 'email':
       print(item)
       regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+      if (search(regex,item)):
+        return True
+      else:
+        return False
+    elif in_type == 'ip':
+      print(item)
+      regex = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
+      if (search(regex,item)):
+        return True
+      else:
+        return False
+    elif in_type == 'zip':
+      print(item)
+      regex = "\d\d\d\d\d"
       if (search(regex,item)):
         return True
       else:
@@ -167,3 +222,10 @@ class Inp():
 
 if __name__ == "__main__":
   app = Inp()
+  test = app.input_choice(
+    in_message ='Choose the weather unit of measure', 
+    choices = {
+      1: 'imperial', 
+      2: 'metric',
+    } )
+  

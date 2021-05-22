@@ -1,20 +1,23 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-from bson.codec_options import CodecOptions
+# from bson.codec_options import CodecOptions
 import pytz
 from collections import ChainMap
 from datetime import datetime, timedelta, date, time
+from helpers.dt import DT 
+
+dt = DT()
 
 
-def timestamp_from_datetime(dt):
-    """ Convert Datetime to timestamp """
-    timestamp_ = int(dt.timestamp())
-    return timestamp_
+# def timestamp_from_datetime(dt):
+#     """ Convert Datetime to timestamp """
+#     timestamp_ = int(dt.timestamp())
+#     return timestamp_
 
 
-def str_date_from_datetime(datetime_):
-    str_date = datetime_.strftime('%Y-%m-%d')
-    return str_date
+# def str_date_from_datetime(datetime_):
+#     str_date = datetime_.strftime('%Y-%m-%d')
+#     return str_date
 
 
 def put_in_dict(root_key, date_key, in_list, date_stamp):
@@ -26,14 +29,14 @@ def put_in_dict(root_key, date_key, in_list, date_stamp):
     return dict
 
 
-def combine_dict(dict_list):
-    """
-    Takes a list of dictionarys and combines into one dictionary
-    requires from collections import ChainMap and python 3.3 or later
-    """
-    current = dict(ChainMap(*dict_list))
-    print(f'combine_dict {current}')
-    return current
+# def combine_dict(dict_list):
+#     """
+#     Takes a list of dictionarys and combines into one dictionary
+#     requires from collections import ChainMap and python 3.3 or later
+#     """
+#     current = dict(ChainMap(*dict_list))
+#     print(f'combine_dict {current}')
+#     return current
 
 
 def check_for_indoor_negative(dictionary, root_key, key):

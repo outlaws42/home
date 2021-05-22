@@ -1,16 +1,20 @@
 from cryptography.fernet import Fernet
-from helpers.file import Location as loc
-from helpers.io import IO as io
+from helpers.file import Location
+from helpers.io import IO
+
+loc = Location()
+io = IO()
 
 class Encryption():
 
-  def gen_key(fname: str,):
+  def gen_key(self,fname: str,):
     home = loc.home_dir()
     key = Fernet.generate_key()
     with open(f'{home}/{fname}', 'wb')as fkey:
       fkey.write(key)
 
   def encrypt(
+    self,
     key: str, 
     fname: str, 
     e_fname: str, 
@@ -40,6 +44,7 @@ class Encryption():
     )
 
   def decrypt(
+    self,
     key: str, 
     fname: str, 
     e_fname: str,
@@ -67,6 +72,7 @@ class Encryption():
       mode = "wb")
 
   def decrypt_login(
+    self,
     key: str, 
     e_fname: str,
     fdest: str = 'relative'

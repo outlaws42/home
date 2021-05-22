@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-version = '2021-05-11'
+version = '2021-05-22'
 
 # Auto text garage door open status
 # Requires 4 file .open_time, .open_time_accum, .cred.yaml, .send
@@ -10,16 +10,20 @@ version = '2021-05-11'
 #   check_dir, mail, decrypt_login,
 #   check_file_dir
 #   )
-from helpers.wizard_automl import (
-  config_setup, open_settings, config_exist
-  )
-from helpers.io import IO as io
-from helpers.email import Mail as ml
-from helpers.encrypt import Encryption as en
+from helpers.wizard_home import WizardHome 
+from helpers.io import IO
+from helpers.file import FileInfo
+from helpers.email import Mail
+from helpers.encrypt import Encryption
 from config.conf import conf_dir, conf_file
 from time import sleep
 from requests import get
 
+wh = WizardHome()
+io = IO()
+fi = FileInfo()
+ml = Mail()
+en = Encryption()
 
 refresh = 60   # In sec.
 time_limit_open = 30
@@ -69,12 +73,12 @@ def logic(
         time_collective += int(open_time)
         io.save_file(accum_file, str(time_collective), 'home')
         print(f'{time_collective} saving to .open_time_accum')
-        mail_info = mail_info(final_status,time_collective)
+        mail_in = mail_info(final_status,time_collective)
         ml.mail(
-          body = mail_info['body'], 
-          subject = mail_info['subject'], 
-          send_to = mail_info['sendto'],
-          login = mail_info['login']
+          body = mail_in['body'], 
+          subject = mail_in['subject'], 
+          send_to = mail_in['sendto'],
+          login = mail_in['login']
         )
         open_time = 0
         io.save_file(open_time_file, str(open_time), 'home')
@@ -126,14 +130,17 @@ def main():
     pass
 
 if __name__ == "__main__":
-    try:
-        file_exists = config_exist(conf_dir, conf_file)
-        if file_exists == False:
+  try:
+      file_exists = fi.check_file_dir(
+        fname = f"{conf_dir}/{conf_file}",
+        fdest = "home"
+        )
+      if file_exists == False:
           print(file_exists)
-          config_setup(conf_dir, conf_file)
-        while True:
-            app = main()
-            sleep(refresh)
-    except KeyboardInterrupt as e:
+          wh.config_setup(conf_dir, conf_file)
+      while True:
+        app = main()
+        sleep(refresh)
+  except KeyboardInterrupt as e:
         print(e)
         print('Interrupted')

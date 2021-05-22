@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Imports ///////////////////
+from helpers import dict_list
 from helpers.wizard_automl import open_settings
 from time import sleep
 from datetime import datetime, timedelta, date, time
@@ -9,10 +10,17 @@ from datetime import datetime, timedelta, date, time
 from pymongo import MongoClient
 from bson.codec_options import CodecOptions
 import pytz
-from helpers.wizard_rest import config_exist, config_setup
+from helpers.wizard_home import WizardHome #config_exist, config_setup
+from helpers.file import FileInfo
+from helpers.dict_list import DictList
+from helpers.io import IO
 from config.conf import conf_dir, conf_file
-from helpers.dict_list import DictList as dl
 
+
+wh = WizardHome()
+fi = FileInfo()
+dl = DictList()
+io = IO()
 
 
 # Refresh rate /////////////////////////////////
@@ -27,12 +35,15 @@ else:
   refresh = refresh_rate_amount
 
 try:
-  file_exists = config_exist(conf_dir, conf_file)
+  file_exists = fi.check_file_dir(
+    fname = f"{conf_dir}/{conf_file}",
+    fdest = "home"
+    )
   if file_exists == False:
       print(file_exists)
-      config_setup(conf_dir, conf_file)
+      wh.config_setup(conf_dir, conf_file)
   else:
-    settings = open_settings(conf_dir, conf_file)
+     settings = io.open_settings(conf_dir, conf_file)
 except Exception as e:
       print(e)
 

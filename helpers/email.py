@@ -3,6 +3,7 @@ from smtplib import SMTP
 class Mail():
 
   def mail(
+    self,
     body: str, 
     subject: str,
     send_to: list,

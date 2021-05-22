@@ -3,9 +3,10 @@ from os import stat, path, mkdir, remove
 import sys
 
 
+
 class Location():
 
-  def home_dir():
+  def home_dir(self):
     home = path.expanduser('~')
     return home
 
@@ -17,14 +18,19 @@ class Location():
 
 class FileInfo():
 
-  def check_file_age(fname, fdest='relative'):
+  def check_file_age(
+    self,
+    fname, 
+    fdest='relative'
+    ):
     """
     Returns the difference of the current timestamp and the
     timestamp of a file last write in hours 
     Arguments = filename from home dir
     Requires import os
     """
-    home = Location.home_dir()
+    loc = Location()
+    home = loc.home_dir()
     if fdest == 'home' or fdest == 'Home':
       file_info= stat(f'{home}/{fname}')
     else:
@@ -35,6 +41,7 @@ class FileInfo():
     return difference_hour
 
   def check_dir(
+    self,
     dname: str, 
     ddest: str = 'home'
     ):
@@ -44,7 +51,8 @@ class FileInfo():
     check to see if specified dir exists.
     Requires import os
     """
-    home = Location.home_dir()
+    loc = Location()
+    home = loc.home_dir()
     if ddest == 'home' or ddest == 'Home':
       dpath = f'{home}/{dname}'
     else:
@@ -53,6 +61,7 @@ class FileInfo():
     return dir_exist
 
   def check_file_dir(
+    self,
     fname: str, 
     fdest: str = 'home'
     ):
@@ -62,7 +71,8 @@ class FileInfo():
     Check if file or folder exist returns True or False
     Requires import os
     """
-    home = Location.home_dir()
+    loc = Location()
+    home = loc.home_dir()
     if fdest == 'home' or fdest == 'Home':
       fpath = f'{home}/{fname}'
     else:
@@ -73,6 +83,7 @@ class FileInfo():
 class FileEdit():
 
   def make_dir(
+    self,
     dname:str, 
     ddest: str = 'home'
     ):
@@ -82,7 +93,8 @@ class FileEdit():
     Makes the dir specified.
     Requires import os
     """
-    home = Location.home_dir()
+    loc = Location()
+    home = loc.home_dir()
     if ddest == 'home' or ddest == 'Home':
       mkdir(f'{home}/{dname}')
     else:
@@ -90,6 +102,7 @@ class FileEdit():
 
 
   def remove_file(
+    self,
     fname:str, 
     fdest: str = 'home'
     ):
@@ -99,7 +112,8 @@ class FileEdit():
     Removes the file specified
     Requires import os
     """
-    home = Location.home_dir()
+    loc = Location()
+    home = loc.home_dir()
     if fdest == 'home' or fdest == 'Home':
       remove(f'{home}/{fname}')
     else:
