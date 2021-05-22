@@ -4,25 +4,34 @@ from fastapi import FastAPI
 from bson import json_util
 from pymongo import MongoClient
 import json
-# from bson.codec_options import CodecOptions
-# from datetime import datetime, timedelta, date, time
-# from config.settings import DB_URI,DATABASE
 from config.conf import conf_dir, conf_file
-from helpers.wizard_rest import config_exist, config_setup, open_settings
+from helpers.wizard_home import WizardHome
+from helpers.file import FileInfo
+from helpers.io import IO
+from helpers.dt import DT
 from helpers import (get_certain_dated_entry_db, get_latest_with_tz_db, 
      check_for_delay_time, list_collection_with_tz_db,get_latest_named_with_tz_db, 
-     put_in_dict, timestamp_from_datetime)
+     put_in_dict)
+
+# init helper classes
+wh = WizardHome()
+fi = FileInfo()
+io = IO()
+dt = DT()
 
 # Init app
 app = FastAPI()
 
 try:
-  file_exists = config_exist(conf_dir, conf_file)
+  file_exists = fi.check_file_dir(
+    fname = f"{conf_dir}/{conf_file}",
+    fdest = "home"
+    )
   if file_exists == False:
       print(file_exists)
-      config_setup(conf_dir, conf_file)
+      wh.config_setup(conf_dir, conf_file)
   else:
-    settings = open_settings(conf_dir, conf_file)
+     settings = io.open_settings(conf_dir, conf_file)
 except Exception as e:
       print(e)
 
@@ -53,7 +62,10 @@ def weather(collection: str):
   else:
     return 404
   result = get_latest_with_tz_db(db, collection)
-  date_stamp = timestamp_from_datetime(result[0][date_key])
+  date_stamp = dt.from_datetime(
+    dt = result[0][date_key], 
+    timestamp = True
+    )
   dict = put_in_dict(root_key, date_key, result, date_stamp)
   sterilized = json.loads(json_util.dumps(dict))
   return sterilized
@@ -73,7 +85,10 @@ def weather_history(history: str):
     try:
       result = get_certain_dated_entry_db(db,'past', days)
       print(f'High_Low Result: {result}')
-      date_stamp = timestamp_from_datetime(result[0]['date'])
+      date_stamp = dt.from_datetime(
+    dt = result[0]['date'], 
+    timestamp = True
+    )
       dict = put_in_dict(f'forecast_{history}', 'date', result, date_stamp)
     except:
       dict = {f'forecast_{history}':{'icon': 0, 'high': 0, 'low': 0,  'date' : 0}}
@@ -82,14 +97,7 @@ def weather_history(history: str):
 
 @app.get('/house/sensors')
 def sensors():
-  date_key = 'dt'
-  root_key = 'sensors'
   result = list_collection_with_tz_db(db, 'sensors')
-  # date_stamp = timestamp_from_datetime(result[0][date_key])
-  # dict = put_in_dict(root_key, date_key, result, date_stamp)
-  # check_for_indoor_negative(dict, root_key,'front_room')
-  # check_for_delay_time(dict, root_key, date_key, name)
-  # sterilized = json.loads(json_util.dumps(dict))
   return result
 
 @app.get('/house/sensors/{name}')
@@ -98,13 +106,15 @@ def sensors(name:str):
   root_key = 'sensors'
   result = get_latest_named_with_tz_db(db, root_key,name)
   print(result[0][date_key])
-  date_stamp = timestamp_from_datetime(result[0][date_key])
+  date_stamp = dt.from_datetime(
+    dt = result[0][date_key], 
+    timestamp = True
+    )
   dict = put_in_dict(root_key, date_key, result, date_stamp)
-  # check_for_indoor_negative(dict, root_key,'front_room')
   check_for_delay_time(dict, root_key, date_key, 'sensor_val')
   sterilized = json.loads(json_util.dumps(dict))
   return sterilized
 
-# Run Server
-# if __name__ == "__main__":
+if __name__ == "__main__":
+  pass
 #     app.run(debug=True, port=5000, host='0.0.0.0')
