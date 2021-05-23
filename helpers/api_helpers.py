@@ -1,24 +1,11 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# from bson.codec_options import CodecOptions
+from bson.codec_options import CodecOptions
 import pytz
-from collections import ChainMap
 from datetime import datetime, timedelta, date, time
 from helpers.dt import DT 
 
 dt = DT()
-
-
-# def timestamp_from_datetime(dt):
-#     """ Convert Datetime to timestamp """
-#     timestamp_ = int(dt.timestamp())
-#     return timestamp_
-
-
-# def str_date_from_datetime(datetime_):
-#     str_date = datetime_.strftime('%Y-%m-%d')
-#     return str_date
-
 
 def put_in_dict(root_key, date_key, in_list, date_stamp):
     dict = {root_key: {}}
@@ -27,17 +14,6 @@ def put_in_dict(root_key, date_key, in_list, date_stamp):
     dict[root_key][date_key] = date_stamp
     print(dict)
     return dict
-
-
-# def combine_dict(dict_list):
-#     """
-#     Takes a list of dictionarys and combines into one dictionary
-#     requires from collections import ChainMap and python 3.3 or later
-#     """
-#     current = dict(ChainMap(*dict_list))
-#     print(f'combine_dict {current}')
-#     return current
-
 
 def check_for_indoor_negative(dictionary, root_key, key):
     """
@@ -57,8 +33,6 @@ def check_for_delay_time(dictionary, root_key, date_key, name_key):
     if to long then sets to 0
     """
     time_stamp = dictionary[root_key][date_key]
-    # value_type = type(dictionary[root_key][name_key])
-    # print(f"Name Key Type: {value_type}")
     now = datetime.now()
     then = datetime.fromtimestamp(time_stamp)
     tdelta = now - then
@@ -68,8 +42,6 @@ def check_for_delay_time(dictionary, root_key, date_key, name_key):
     print(f"seconds: {seconds}")
     if seconds >= minute:
       dictionary[root_key][name_key] = 0
-    # elif seconds >= minute and value_type == str:
-    #   dictionary[root_key][name_key] = 'NR'
     print(f"{root_key} Dictionary after time check {dictionary}")
     return dictionary
 
@@ -101,9 +73,6 @@ def get_latest_named_with_tz_db(db, col_read,name):
     collection = db[col_read]
     aware_times = collection.with_options(
         codec_options=CodecOptions(tz_aware=True, tzinfo=pytz.timezone('US/Eastern')))
-    # if name == 'gdbasement':
-    #   response = aware_times.find({:{'$in':['Open','Closed']}}, {'_id': 0, 'replace' : 0}).sort("_id", -1).limit(1)
-    # else:
     response = aware_times.find({'sensor':{'$in':[name]}}, {'_id': 0}).sort("_id", -1).limit(1)
     results = [doc for doc in response]
     print(f'get_multi {results}')

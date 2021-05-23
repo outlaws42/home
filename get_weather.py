@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # Imports ///////////////////
-from helpers import dict_list
-from helpers.wizard_automl import open_settings
 from time import sleep
 from datetime import datetime, timedelta, date, time
-# import pymongo
 from pymongo import MongoClient
 from bson.codec_options import CodecOptions
 import pytz
@@ -83,8 +80,6 @@ class GetWeather():
         print('Interupted')
   
   def main(self):
-    # self.indoor = Indoor()
-    # self.indoor.run()
     self.weather = Weather()
     self.weather.get_weather_info(use_api,zip_code,units)
     self.forecast = dl.combine_dict(self.weather.get_forecast())
@@ -159,4 +154,4 @@ class GetWeather():
     return listout
 
 if __name__ == "__main__":
-            app = GetWeather()    
+  app = GetWeather()    

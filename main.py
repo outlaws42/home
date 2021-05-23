@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+import uvicorn
 from fastapi import FastAPI
 from bson import json_util
 from pymongo import MongoClient
@@ -116,5 +117,5 @@ def sensors(name:str):
   return sterilized
 
 if __name__ == "__main__":
-  pass
-#     app.run(debug=True, port=5000, host='0.0.0.0')
+  # pass
+  uvicorn.run(app, host="0.0.0.0", port=5000)

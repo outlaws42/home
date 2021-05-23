@@ -6,16 +6,25 @@ import paho.mqtt.client as mqtt
 from datetime import datetime
 from pymongo import MongoClient
 import time
-from helpers.wizard_rest import config_exist, config_setup, open_settings
+from helpers.wizard_home import WizardHome #config_exist, config_setup, open_settings
+from helpers.file import FileInfo
+from helpers.io import IO
 from config.conf import conf_dir, conf_file
 
+wh = WizardHome()
+fi = FileInfo()
+io = IO()
+
 try:
-  file_exists = config_exist(conf_dir, conf_file)
+  file_exists = fi.check_file_dir(
+    fname = f"{conf_dir}/{conf_file}",
+    fdest = "home"
+    )
   if file_exists == False:
       print(file_exists)
-      config_setup(conf_dir, conf_file)
+      wh.config_setup(conf_dir, conf_file)
   else:
-    settings = open_settings(conf_dir, conf_file)
+     settings = io.open_settings(conf_dir, conf_file)
 except Exception as e:
       print(e)
 

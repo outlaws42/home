@@ -6,14 +6,17 @@ from datetime import datetime
 from geopy.geocoders import Nominatim
 import logging
 import requests
-from  helpers.io import IO as io
-from helpers.dict_list import DictList as dl
+from  helpers.io import IO
+from helpers.dict_list import DictList
 from config.instance.config import OWM_API_KEY as key
 logging.basicConfig(
     filename='wu.log', 
     level=logging.INFO, 
     format='%(asctime)s %(message)s', 
     datefmt='%m/%d/%Y %I:%M:%S %p')
+
+io = IO()
+dl = DictList()
 
 class Weather():
     degree_sign = '\N{DEGREE SIGN}'
