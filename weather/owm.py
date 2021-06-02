@@ -55,6 +55,8 @@ class Weather():
         zip_code: str, 
         units: str 
         ):
+        for_file ='forecast.json'
+        cur_file = 'current.json'
         # location = self.geolocation(ZIP_CODE)
         # lat, long, self.city = location
         lat = 41.232921
@@ -66,18 +68,18 @@ class Weather():
                 f = requests.get(f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={long}&units={units}&exclude=current,alert,minutely,hourly&appid={key}')
                 current = c.json()
                 forecast = f.json()
-                io.save_json('current.json', current, 'relative')
-                io.save_json('forecast.json', forecast, 'relative')
-                self.current = io.open_json('current.json','relative')
-                self.forecast_in = io.open_json('forecast.json','relative')
+                io.save_json(cur_file, current, 'relative')
+                io.save_json(for_file, forecast, 'relative')
+                self.current = io.open_json(cur_file,'relative')
+                self.forecast_in = io.open_json(for_file,'relative')
                 print(f"use_api: {use_api}")
             else:
                 print(f"use_api: {use_api}")
-                self.current = io.open_json('current.json', 'relative')
-                self.forecast_in = io.open_json('forecast.json','relative')
+                self.current = io.open_json(cur_file, 'relative')
+                self.forecast_in = io.open_json(for_file,'relative')
         except Exception as e:
-           self.current = io.open_json('current.json', 'relative')
-           self.forecast_in = io.open_json('forecast.json','relative')
+           self.current = io.open_json(cur_file, 'relative')
+           self.forecast_in = io.open_json(for_file,'relative')
            print(f"Collect current error: {str(e)}")
            logging.info('Collect current error:  ' + str(e))
            pass
