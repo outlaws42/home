@@ -1,3 +1,4 @@
+from sys import platform
 from helpers.colors import Colors as c
 from helpers.file import (
   Location, FileInfo, FileEdit
@@ -12,6 +13,16 @@ fe = FileEdit()
 io = IO()
 inp = Inp()
 en = Encryption()
+
+def get_ip():
+  # os = platform
+  if platform.startswith('linux'): 
+    ipaddr = fi.command_var("hostname -I")
+  elif platform.startswith("windows"):
+    ipaddr = fi.command_var("ipconfig /release")
+  elif platform.startswith("darwin"):
+    ipaddr = fi.command_var("ifconfig |grep inet")
+  return ipaddr
 
 class WizardHome():
 
@@ -32,26 +43,28 @@ class WizardHome():
 
     if dir_exists == False:
       fe.make_dir(conf_dir)
+    kf_exists = fi.check_file_dir(f'{conf_dir}/info.key')
+    cred_exists = fi.check_file_dir(f'{conf_dir}/.cred_en.yaml')
 
     print(
       f'\n{c.YELLOW}{c.BOLD}We could not find any ' 
       f'configuration{c.END}'
-      f'\n{c.GREEN}This Wizard will ask some questions ' 
-      f'to setup the configuration needed for the script to function.{c.END}'
-      f'\n{c.GREEN}{c.BOLD}This configuration wizard will only run once.{c.END}\n'
-      f'\n{c.GREEN}The first 2 questions are going ' 
-      f'to be about your email and password you are using to send email. '
-      f'\nThis login information will be stored on your local ' 
-      f'computer encrypted seperate '
-      f'\nfrom the rest of the configuration. ' 
-      f'This is not viewable by browsing the filesystem{c.END}'
+      f'\n{c.GREEN}{c.BOLD}This Wizard will ask some questions ' 
+      f'to setup the configuration needed for the script to function.'
+      f'\nThis configuration wizard will only run once.{c.END}\n'
     )
-    # sento_exists = automl_config_exist(conf_dir, conf_file)
-
-    kf_exists = fi.check_file_dir(f'{conf_dir}/info.key')
-    cred_exists = fi.check_file_dir(f'{conf_dir}/.cred_en.yaml')
 
     if kf_exists == False and cred_exists == False:
+
+      print(
+        f'{c.BOLD}{c.GREEN}The first 2 questions are going ' 
+        f'to be about your email and password you are using to send email. '
+        f'\nThis login information will be stored on your local ' 
+        f'computer encrypted seperate '
+        f'\nfrom the rest of the configuration. ' 
+        f'This is not viewable by browsing the filesystem{c.END}'
+      )
+
       en.gen_key(f'{conf_dir}/.info.key')
       key = io.open_file(
           fname = f'{conf_dir}/.info.key', 
@@ -61,11 +74,10 @@ class WizardHome():
 
       email = inp.input_single(
         in_message = "\nEnter your email",
-        in_type = 'email'
+        in_type = 'email',
+        default = 'appmonitor42@gmail.com'
       )
-      pas = inp.input_single(
-        in_message = "\nEnter your password",
-        in_type = 'password')
+      pas = inp.input_password()
       lo = {email:pas}
       io.save_yaml(
         fname = f'{conf_dir}/.cred.yaml',
@@ -80,25 +92,27 @@ class WizardHome():
         )
       fe.remove_file(f'{conf_dir}/.cred.yaml')
     else:
-      print('cred already exists')
+      pass
 
     send_list = inp.input_list(
       subject= "email address",
       description = 'to send to (example@gmail.com)',
       in_type = 'email')
-    
+
+    ip = get_ip()
     ipadd = inp.input_single(
-      in_message="Enter the IP address for the brooker",
-      in_type = "ip"
+      in_message="Enter the IP address for the broker",
+      in_type = "ip4",
+      default = ip
       )
     
     zip_code = inp.input_single(
-      in_message="Enter the US Zip code for weather data",
-      in_type = "zip"
+      in_message="Enter the 5 digit US Zip code for weather data",
+      in_type = "zip5"
       )
 
     units = inp.input_choice(
-    in_message ='Choose the weather unit of measure', 
+    in_message ='Choose the unit of measure for weather collection', 
     choices = {
       1: 'imperial', 
       2: 'metric',
@@ -121,9 +135,9 @@ class WizardHome():
       content = load)
     print(
       f'\n{c.YELLOW}{c.BOLD}This completes the wizard{c.END}'
-      f'\nThe configuration file has been written to disk'
+      f'\n{c.BOLD}The configuration file has been written to disk'
       f'\nIf you want to change the settings you can edit ' 
-      f'{c.CYAN}{c.BOLD}{home}/{conf_dir}/{conf_file}{c.END}'
+      f'{c.CYAN}{home}/{conf_dir}/{conf_file}{c.END}'
       f'\n{c.GREEN}{c.BOLD}This wizard ' 
       f'won\'t run any more, So the script can ' 
       f'now be run automatically{c.END}\n'

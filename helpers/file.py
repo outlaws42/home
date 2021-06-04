@@ -1,4 +1,5 @@
 from datetime import datetime
+from subprocess import check_output, run
 from os import stat, path, mkdir, remove
 import sys
 
@@ -79,6 +80,27 @@ class FileInfo():
       fpath = Location.get_resource_path(fname)
     file_exist = path.exists(fpath)
     return file_exist
+
+  def command_var(
+    self, 
+    in_command: str,
+    ):
+    """
+    in_command = terminal command to run,\n
+    returns the result of the command with 
+    ending white space removed
+    """
+    com = []
+    for i in in_command.split():
+      com.append(i)
+    try:
+      raw_command = check_output(com).decode('utf-8')
+      command = raw_command.strip()
+      return command
+    except Exception as e:
+      print(e)
+      return "Command Not Found"
+
 
 class FileEdit():
 
