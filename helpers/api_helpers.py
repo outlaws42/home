@@ -2,20 +2,10 @@
 # -*- coding: utf-8 -*-
 from bson.codec_options import CodecOptions
 import pytz
-from collections import ChainMap
 from datetime import datetime, timedelta, date, time
+from helpers.dt import DT 
 
-
-def timestamp_from_datetime(dt):
-    """ Convert Datetime to timestamp """
-    timestamp_ = int(dt.timestamp())
-    return timestamp_
-
-
-def str_date_from_datetime(datetime_):
-    str_date = datetime_.strftime('%Y-%m-%d')
-    return str_date
-
+dt = DT()
 
 def put_in_dict(root_key, date_key, in_list, date_stamp):
     dict = {root_key: {}}
@@ -24,17 +14,6 @@ def put_in_dict(root_key, date_key, in_list, date_stamp):
     dict[root_key][date_key] = date_stamp
     print(dict)
     return dict
-
-
-def combine_dict(dict_list):
-    """
-    Takes a list of dictionarys and combines into one dictionary
-    requires from collections import ChainMap and python 3.3 or later
-    """
-    current = dict(ChainMap(*dict_list))
-    print(f'combine_dict {current}')
-    return current
-
 
 def check_for_indoor_negative(dictionary, root_key, key):
     """
@@ -45,7 +24,6 @@ def check_for_indoor_negative(dictionary, root_key, key):
         dictionary[root_key][key] = 0
         print(dictionary)
     return dictionary
-
 
 def check_for_delay_time(dictionary, root_key, date_key, name_key):
     """

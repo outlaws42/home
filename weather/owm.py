@@ -2,19 +2,21 @@
 
 # -*- coding: utf-8 -*-
 from datetime import datetime
-import geopy.geocoders
+# import geopy.geocoders
 from geopy.geocoders import Nominatim
 import logging
 import requests
-import weather.tmod as tmod
+from  helpers.io import IO
+from helpers.dict_list import DictList
 from config.instance.config import OWM_API_KEY as key
-from config.settings import USE_API, ZIP_CODE, UNITS
 logging.basicConfig(
     filename='wu.log', 
     level=logging.INFO, 
     format='%(asctime)s %(message)s', 
     datefmt='%m/%d/%Y %I:%M:%S %p')
 
+io = IO()
+dl = DictList()
 
 class Weather():
     degree_sign = '\N{DEGREE SIGN}'
@@ -24,15 +26,15 @@ class Weather():
 
     def get_forecast(self):
         forecast_l = []
-        tmod.add_to_list(self.forecast_days(len(self.forecast_in['daily'])),forecast_l)
-        tmod.add_to_list(self.forecast_temp(len(self.forecast_in['daily'])),forecast_l)
-        tmod.add_to_list(self.forecast_precip_day(len(self.forecast_in['daily'])),forecast_l)
-        tmod.add_to_list(self.forecast_code(len(self.forecast_in['daily'])),forecast_l)
-        tmod.add_to_list(self.forecast_datetime(),forecast_l)
+        dl.add_to_list(self.forecast_days(len(self.forecast_in['daily'])),forecast_l)
+        dl.add_to_list(self.forecast_temp(len(self.forecast_in['daily'])),forecast_l)
+        dl.add_to_list(self.forecast_precip_day(len(self.forecast_in['daily'])),forecast_l)
+        dl.add_to_list(self.forecast_code(len(self.forecast_in['daily'])),forecast_l)
+        dl.add_to_list(self.forecast_datetime(),forecast_l)
         return forecast_l
     
 
-    def geolocation(self, address):
+    def geolocation(self, address): 
         try:
             geolocator = Nominatim(user_agent = "weather")
             location = geolocator.geocode(address)
@@ -47,30 +49,37 @@ class Weather():
             print("This is the location from Error {} ".format(e))
             return 41.232921, -85.649106, "columbia city"
 
-    def get_weather_info(self):
+    def get_weather_info(
+        self, 
+        use_api: bool, 
+        zip_code: str, 
+        units: str 
+        ):
+        for_file ='forecast.json'
+        cur_file = 'current.json'
         # location = self.geolocation(ZIP_CODE)
         # lat, long, self.city = location
         lat = 41.232921
         long = -85.649106
         # print(f" This is the location {location}")
         try:
-            if USE_API == True:
-                c = requests.get(f'https://api.openweathermap.org/data/2.5/weather?zip={ZIP_CODE},us&units={UNITS}&appid={key}')
-                f = requests.get(f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={long}&units={UNITS}&exclude=current,alert,minutely,hourly&appid={key}')
+            if use_api == True:
+                c = requests.get(f'https://api.openweathermap.org/data/2.5/weather?zip={zip_code},us&units={units}&appid={key}')
+                f = requests.get(f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={long}&units={units}&exclude=current,alert,minutely,hourly&appid={key}')
                 current = c.json()
                 forecast = f.json()
-                tmod.save_json('current.json', current, 'relative')
-                tmod.save_json('forecast.json', forecast, 'relative')
-                self.current = tmod.open_json('current.json','relative')
-                self.forecast_in = tmod.open_json('forecast.json','relative')
-                print(f"USE_API: {USE_API}")
+                io.save_json(cur_file, current, 'relative')
+                io.save_json(for_file, forecast, 'relative')
+                self.current = io.open_json(cur_file,'relative')
+                self.forecast_in = io.open_json(for_file,'relative')
+                print(f"use_api: {use_api}")
             else:
-                print(f"USE_API: {USE_API}")
-                self.current = tmod.open_json('current.json', 'relative')
-                self.forecast_in = tmod.open_json('forecast.json','relative')
+                print(f"use_api: {use_api}")
+                self.current = io.open_json(cur_file, 'relative')
+                self.forecast_in = io.open_json(for_file,'relative')
         except Exception as e:
-           self.current = tmod.open_json('current.json', 'relative')
-           self.forecast_in = tmod.open_json('forecast.json','relative')
+           self.current = io.open_json(cur_file, 'relative')
+           self.forecast_in = io.open_json(for_file,'relative')
            print(f"Collect current error: {str(e)}")
            logging.info('Collect current error:  ' + str(e))
            pass

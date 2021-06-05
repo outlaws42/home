@@ -1,114 +1,146 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-version = '2021-04-07'
+version = '2021-05-22'
 
 # Auto text garage door open status
-# Requires 4 file .tme, .tme_accum, .cred.yaml, .send
-from weather.tmod import open_file, save_file, open_yaml
-from pymongo import MongoClient
-from config.settings import DB_URI, DATABASE, API
+# Requires 4 file .open_time, .open_time_accum, .cred.yaml, .send
+# from helpers.tmod import (
+#   open_file, save_file, open_yaml, 
+#   check_dir, mail, decrypt_login,
+#   check_file_dir
+#   )
+from helpers.wizard_home import WizardHome 
+from helpers.io import IO
+from helpers.file import FileInfo
+from helpers.email import Mail
+from helpers.encrypt import Encryption
+from config.conf import conf_dir, conf_file
 from time import sleep
-from os.path import expanduser
-import smtplib
-import requests
+from requests import get
+
+wh = WizardHome()
+io = IO()
+fi = FileInfo()
+ml = Mail()
+en = Encryption()
+
 refresh = 60   # In sec.
 time_limit_open = 30
 time_limit_error = 90
-# Database info
-mongo = MongoClient(DB_URI)
-db = mongo[DATABASE]
+door_open = 'Open'
+mode = 1  # 0 = Debug mail, 1 = production
+time_increment = 1  # In min.
+open_time_file = f'{conf_dir}/.open_time'
+accum_file = f'{conf_dir}/.open_time_accum'
 
+def add_open_time():
+    c = get('http://192.168.1.3:8000/house/sensors/gdbasement')
+    result = c.json()
+    sensor_val = result['sensors']['sensor_val']
+    if sensor_val == 1:
+        final_status = 'Closed'
+        time_limit= time_limit_open
+    elif sensor_val == 2:
+        final_status = 'Open'
+        time_limit= time_limit_open
+    else:
+        final_status = 'ERROR'
+        time_limit = time_limit_error
+    open_time = io.open_file(open_time_file,'home')
+    print(f'{open_time} open from .open_time')
+    if final_status == door_open or final_status =='ERROR':
+        open_time = int(open_time)
+        open_time+=time_increment
+    else:
+        open_time = 0
+        time_collective = '0'
+        io.save_file(accum_file,time_collective,'home')
+        print(f'{time_collective} saving to .open_time_accum')
+    io.save_file(open_time_file,str(open_time),'home')
+    print(f'{open_time} saving to .open_time Limit is {time_limit}')
+    logic(open_time, time_limit, final_status)
 
-class SendMail:
-    door_open = 'Open'
-    mode = 1  # 0 = Debug mail, 1 = production
-    # time_limit = 30  # In min.
-    time_increment = 1  # In min.
+def logic(
+  open_time: str, 
+  time_limit: int,
+  final_status: str
+  ):
+    if open_time >= time_limit:
+        time_collective = io.open_file(accum_file, 'home')
+        print(f'{time_collective} open from .open_time_accum')
+        time_collective = int(time_collective)
+        time_collective += int(open_time)
+        io.save_file(accum_file, str(time_collective), 'home')
+        print(f'{time_collective} saving to .open_time_accum')
+        mail_in = mail_info(final_status,time_collective)
+        ml.mail(
+          body = mail_in['body'], 
+          subject = mail_in['subject'], 
+          send_to = mail_in['sendto'],
+          login = mail_in['login']
+        )
+        open_time = 0
+        io.save_file(open_time_file, str(open_time), 'home')
 
-    def __init__(self):
-        self.add_open_time()
-        self.logic()
-        if self.mode == 0: # debug Mail
-            self.mail()
-        else:
-            pass
+        print('Sending email')
+    else:
+        pass
 
-    def add_open_time(self):
-        c = requests.get('http://192.168.1.3:8000/house/sensors/gdbasement')
-        result = c.json()
-        sensor_val = result['sensors']['sensor_val']
-        if sensor_val == 1:
-            self.final_status = 'Closed'
-            self.time_limit= time_limit_open
-        elif sensor_val == 2:
-            self.final_status = 'Open'
-            self.time_limit= time_limit_open
-        else:
-            self.final_status = 'ERROR'
-            self.time_limit = time_limit_error
-        self.tme = open_file('.tme','home')
-        print(f'{self.tme} open from .tme')
-        if self.final_status == self.door_open or self.final_status =='ERROR':
-            self.tme = int(self.tme)
-            self.tme+=self.time_increment
-        else:
-            self.tme = 0
-            self.time_collective = '0'
-            save_file('.tme_accum',self.time_collective,'home')
-            print(f'{self.time_collective} saving to .tme_accum')
-        save_file('.tme',str(self.tme),'home')
-        print(f'{self.tme} saving to .tme Limit is {self.time_limit}')
+def mail_info(
+  final_status: str,
+  time_collective: int
+  ):
+  kf = f"{conf_dir}/.info.key"
+  ef = f"{conf_dir}/.cred_en.yaml"
+  st = io.open_settings(conf_dir, conf_file)
+  body = (
+    f'\n Garage: {final_status}'
+    f'( {time_collective} min notifier)'
+  )
+  sub = 'Garage Door Status'
+  key = io.open_file(
+    fname = kf, 
+    fdest = "home",
+    mode ="rb"
+    )
+  login = en.decrypt_login(
+    key = key, 
+    e_fname = ef, 
+    fdest = "home"
+    )
+  return {
+    "login": login, 
+    "body": body, 
+    "subject": sub, 
+    "sendto": st
+    }
 
-    def logic(self):
-
-        if self.tme >= self.time_limit:
-            self.time_collective = open_file('.tme_accum', 'home')
-            print(f'{self.time_collective} open from .tme_accum')
-            self.time_collective = int(self.time_collective)
-            self.time_collective += int(self.tme)
-            save_file('.tme_accum', str(self.time_collective), 'home')
-            print(f'{self.time_collective} saving to .tme_accum')
-            self.mail()
-            self.tme = 0
-            save_file('.tme', str(self.tme), 'home')
-
-            print('Sending email')
-        else:
-            pass
-
-    def login_info(self):
-        ps = open_yaml('.cred.yaml', 'home')
-        for key, value in ps.items():
-            us = key
-            psw = value
-            return [us,psw]
-
-    def mail(self):
-        us, psw = self.login_info()
-        recipients = open_file('.send', 'home').splitlines()
-        content = (
-            f'\n Garage: {self.final_status}'
-            f'( {self.time_collective} min notifier)'
-            )
-        subject = 'Garage Door Status'
-        message = f'Subject: {subject}\n\n{content}'
-
-        mail = smtplib.SMTP('smtp.gmail.com', 587)
-
-        mail.ehlo()
-        mail.starttls()
-        mail.ehlo()
-        mail.login(us, psw)
-        mail.sendmail(us, recipients, message)
-        mail.close()
-
+def main():
+  add_open_time()
+  if mode == 0: # debug Mail
+    mail_i = mail_info("Closed Test", 30)
+    ml.mail(
+      body = mail_i['body'], 
+      subject = mail_i['subject'], 
+      send_to = mail_i['sendto'],
+      login = mail_i['login']
+        )
+  else:
+    pass
 
 if __name__ == "__main__":
-    try:
-        while True:
-            app = SendMail()
-            sleep(refresh)
-    except KeyboardInterrupt as e:
+  try:
+      file_exists = fi.check_file_dir(
+        fname = f"{conf_dir}/{conf_file}",
+        fdest = "home"
+        )
+      if file_exists == False:
+          print(file_exists)
+          wh.config_setup(conf_dir, conf_file)
+      while True:
+        app = main()
+        sleep(refresh)
+  except KeyboardInterrupt as e:
         print(e)
         print('Interrupted')

@@ -6,6 +6,8 @@ __pycache__/
 *.db
 *.sql
 config/instance/config.py
+config/settings.py
+config/settings.yaml
 weather/weather.db
 getpastdb.py
 run.py
@@ -28,4 +30,4 @@ test_publish.py
 test_subscribe.py
 # weatherapi.py
 forecastwa.json
-weather/tmod.py
+helpers/tmod.py

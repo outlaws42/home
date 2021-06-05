@@ -4,18 +4,20 @@
 # Imports ///////////////////
 from time import sleep
 from datetime import datetime, timedelta, date, time
-import pymongo
 from pymongo import MongoClient
 from bson.codec_options import CodecOptions
 import pytz
-from config.settings import DB_URI, DATABASE, API
-from weather.tmod import combine_dict
-if API == 1:
-  from weather.wbit import Weather
-elif API == 2:
-  from weather.owm import Weather
-elif API == 3:
-  from weather.weatherapi import Weather
+from helpers.wizard_home import WizardHome #config_exist, config_setup
+from helpers.file import FileInfo
+from helpers.dict_list import DictList
+from helpers.io import IO
+from config.conf import conf_dir, conf_file
+
+
+wh = WizardHome()
+fi = FileInfo()
+dl = DictList()
+io = IO()
 
 
 # Refresh rate /////////////////////////////////
@@ -29,9 +31,36 @@ else:
   # Seconds Refresh refresh_rate_amount sleep() is in seconds
   refresh = refresh_rate_amount
 
+try:
+  file_exists = fi.check_file_dir(
+    fname = f"{conf_dir}/{conf_file}",
+    fdest = "home"
+    )
+  if file_exists == False:
+      print(file_exists)
+      wh.config_setup(conf_dir, conf_file)
+  else:
+     settings = io.open_settings(conf_dir, conf_file)
+except Exception as e:
+      print(e)
+
+db_uri = settings['DB_URI']
+database = settings['DATABASE']
+api = settings['API']
+use_api = settings['USE_API']
+zip_code = settings['ZIP_CODE']
+units = settings['UNITS']
+
+if api == 1:
+  from weather.wbit import Weather
+elif api == 2:
+  from weather.owm import Weather
+elif api == 3:
+  from weather.weatherapi import Weather
+
 # Database info
-mongo = MongoClient(DB_URI)
-db = mongo[DATABASE]
+mongo = MongoClient(db_uri)
+db = mongo[database]
 
 read_collection = 'current'
 write_collection = 'past'
@@ -51,12 +80,10 @@ class GetWeather():
         print('Interupted')
   
   def main(self):
-    # self.indoor = Indoor()
-    # self.indoor.run()
     self.weather = Weather()
-    self.weather.get_weather_info()
-    self.forecast = combine_dict(self.weather.get_forecast())
-    self.weather_info = combine_dict(self.weather.gleen_info())
+    self.weather.get_weather_info(use_api,zip_code,units)
+    self.forecast = dl.combine_dict(self.weather.get_forecast())
+    self.weather_info = dl.combine_dict(self.weather.gleen_info())
     print(f'Weather_info: {self.weather_info}')
     print(f'Forecast_info: {self.forecast}')
     self.replace_one_db('forecast', self.forecast)
@@ -127,4 +154,4 @@ class GetWeather():
     return listout
 
 if __name__ == "__main__":
-            app = GetWeather()    
+  app = GetWeather()    
