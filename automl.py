@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-version = '2021-05-22'
+version = '2021-07-04'
 
 # Auto text garage door open status
 # Requires 4 file .open_time, .open_time_accum, .cred.yaml, .send
@@ -35,9 +35,12 @@ open_time_file = f'{conf_dir}/.open_time'
 accum_file = f'{conf_dir}/.open_time_accum'
 
 def add_open_time():
-    c = get('http://192.168.1.3:8000/house/sensors/gdbasement')
-    result = c.json()
-    sensor_val = result['sensors']['sensor_val']
+    try:
+      c = get('http://192.168.1.3:8000/house/sensors/gdbasement')
+      result = c.json()
+      sensor_val = result['sensors']['sensor_val']
+    except Exception as e:
+      sensor_val = 1
     if sensor_val == 1:
         final_status = 'Closed'
         time_limit= time_limit_open
@@ -113,7 +116,7 @@ def mail_info(
     "login": login, 
     "body": body, 
     "subject": sub, 
-    "sendto": st
+    "sendto": st['SENDTO']
     }
 
 def main():
