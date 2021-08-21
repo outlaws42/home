@@ -81,7 +81,7 @@ def on_message(client, userdata, message):
 
 # Create a client and connecting to the broker
 client = mqtt.Client('server')
-client.message_callback_add('room/basement/gdstatus',on_message_gdstatus)
+# client.message_callback_add('room/basement/gdstatus',on_message_gdstatus)
 client.message_callback_add('room/temperature/front',on_message_frtemp)
 client.on_message = on_message
 client.connect(broker_address)
