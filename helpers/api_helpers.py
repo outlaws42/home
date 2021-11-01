@@ -12,7 +12,6 @@ def put_in_dict(root_key, date_key, in_list, date_stamp):
     for key in in_list[0]:
         dict[root_key][key] = in_list[0][key]
     dict[root_key][date_key] = date_stamp
-    print(dict)
     return dict
 
 def check_for_indoor_negative(dictionary, root_key, key):
@@ -20,9 +19,7 @@ def check_for_indoor_negative(dictionary, root_key, key):
     Checks checks to see if the temp is negative if so it makes it 0
     """
     if dictionary[root_key][key] < 0:
-        print('NEGATIVE NUMBER')
         dictionary[root_key][key] = 0
-        print(dictionary)
     return dictionary
 
 def check_for_delay_time(dictionary, root_key, date_key, name_key):
@@ -32,20 +29,13 @@ def check_for_delay_time(dictionary, root_key, date_key, name_key):
     if to long then sets to 0
     """
     time_stamp = dictionary[root_key][date_key]
-    # value_type = type(dictionary[root_key][name_key])
-    # print(f"Name Key Type: {value_type}")
     now = datetime.now()
     then = datetime.fromtimestamp(time_stamp)
     tdelta = now - then
     seconds = tdelta.total_seconds()
     minute = 60
-    print(f"timeDelta: {tdelta}")
-    print(f"seconds: {seconds}")
     if seconds >= minute:
       dictionary[root_key][name_key] = 0
-    # elif seconds >= minute and value_type == str:
-    #   dictionary[root_key][name_key] = 'NR'
-    print(f"{root_key} Dictionary after time check {dictionary}")
     return dictionary
 
 
@@ -81,7 +71,6 @@ def get_latest_named_with_tz_db(db, col_read,name):
     # else:
     response = aware_times.find({'sensor':{'$in':[name]}}, {'_id': 0}).sort("_id", -1).limit(1)
     results = [doc for doc in response]
-    print(f'get_multi {results}')
     return results
 
 

@@ -35,7 +35,6 @@ class Weather():
 
     def get_weather_info(self):
         # USE_API = False
-        print('WeatherApi')
         try:
             if USE_API == True:
                 f = requests.get(
@@ -48,16 +47,13 @@ class Weather():
                 # self.current = tmod.open_json('current.json','relative')
                 self.forecast_in = tmod.open_json(
                     'forecastwa.json', 'relative')
-                print(f"USE_API: {USE_API}")
+
             else:
-                print(f"USE_API: {USE_API}")
-                # self.current = tmod.open_json('current.json', 'relative')
                 self.forecast_in = tmod.open_json(
                     'forecastwa.json', 'relative')
         except Exception as e:
             #    self.current = tmod.open_json('current.json', 'relative')
             self.forecast_in = tmod.open_json('forecastwa.json', 'relative')
-            print(f"Collect current error: {str(e)}")
             logging.info('Collect current error:  ' + str(e))
             pass
     
@@ -142,7 +138,6 @@ class Weather():
         forecast_day = []
         for i in range(days):
             tstamp = self.forecast_in['forecast']['forecastday'][i]['hour'][0]['time_epoch']
-            print(tstamp)
             day = {f'day{i}_dow': datetime.fromtimestamp(
                 tstamp).strftime('%a')}
             forecast_day.append(day)

@@ -21,7 +21,6 @@ try:
     fdest = "home"
     )
   if file_exists == False:
-      print(file_exists)
       wh.config_setup(conf_dir, conf_file)
   else:
      settings = io.open_settings(conf_dir, conf_file)
@@ -40,7 +39,6 @@ def replace_one_db(col, data, topic):
     """ replace one to a mongoDB database  """
     collection = db[col]
     collection.replace_one({'sensor' : topic}, data, True)
-    print(f'wrote {topic} to the {col} collection')
 
 def on_message_frtemp(client, userdata, message):
     # Callback fires when a published message is received.
@@ -53,7 +51,6 @@ def on_message_frtemp(client, userdata, message):
         'dt' : time_now, 
         }
     replace_one_db('sensors', t, topic)
-    print(f'Recieved message: {t}')
 
 def on_message_gdstatus(client, userdata, message):
     # Callback fires when a published message is received.
@@ -72,12 +69,10 @@ def on_message_gdstatus(client, userdata, message):
         'dt' : time_now, 
         }
     replace_one_db('sensors', t, topic)
-    print(f'Recieved message: {t}')
 
 def on_message(client, userdata, message):
     # Callback fires when a published message is received.
-
-    print(f'Recieved message')
+    pass
 
 # Create a client and connecting to the broker
 client = mqtt.Client('server')

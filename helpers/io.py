@@ -32,7 +32,6 @@ class IO():
         return content
     except(FileNotFoundError) as e:
         print(e)
-        print('It is reading here')
         if fdest == 'home' or fdest == 'Home':
             with open(f'{home}/{fname}', 'w') as output:
                 output.write(def_content)

@@ -37,7 +37,6 @@ try:
     fdest = "home"
     )
   if file_exists == False:
-      print(file_exists)
       wh.config_setup(conf_dir, conf_file)
   else:
      settings = io.open_settings(conf_dir, conf_file)
@@ -84,8 +83,6 @@ class GetWeather():
     self.weather.get_weather_info(use_api,zip_code,units)
     self.forecast = dl.combine_dict(self.weather.get_forecast())
     self.weather_info = dl.combine_dict(self.weather.gleen_info())
-    print(f'Weather_info: {self.weather_info}')
-    print(f'Forecast_info: {self.forecast}')
     self.replace_one_db('forecast', self.forecast)
     self.write_one_db('current', self.weather_info)
 
@@ -110,7 +107,6 @@ class GetWeather():
   def get_high_low_temp_db(self, coll_read, coll_write, find_key, sort_key):
     """ Gets High and Low temp for the day. only between 11:30pm and 12pm """
     now = datetime.now()
-    print(f"Current datetime is {now}, self.run_once = {self.run_once}")
     today12am = now.replace(hour=0, minute=0, second=0, microsecond=0)
     today1230am = now.replace(hour=0, minute=35, second=0, microsecond=0)
     today1130pm = now.replace(hour=23, minute=30, second=0, microsecond=0)

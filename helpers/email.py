@@ -17,7 +17,6 @@ class Mail():
     """
     us, psw = login
     message = f'Subject: {subject}\n\n{body}'
-    print(message)
     try:
       mail = SMTP('smtp.gmail.com', 587)
       mail.ehlo()
@@ -26,7 +25,6 @@ class Mail():
       mail.login(us, psw)
       mail.sendmail(us,send_to, message)
       mail.close()
-      print('Successfully sent email')
     except Exception as e:
       print('Could not send email because')
       print(e)

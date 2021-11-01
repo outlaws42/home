@@ -29,7 +29,6 @@ try:
     fdest = "home"
     )
   if file_exists == False:
-      print(file_exists)
       wh.config_setup(conf_dir, conf_file)
   else:
      settings = io.open_settings(conf_dir, conf_file)
@@ -73,7 +72,6 @@ def weather(collection: str):
 
 @app.get('/weather/past/{history}')
 def weather_history(history: str):
-    print(history)
     if history == 'day' or history == 'year':
       if history == 'year':
         days = 365 #517
@@ -85,7 +83,6 @@ def weather_history(history: str):
       return f'404 ${history}'
     try:
       result = get_certain_dated_entry_db(db,'past', days)
-      print(f'High_Low Result: {result}')
       date_stamp = dt.from_datetime(
     dt = result[0]['date'], 
     timestamp = True
@@ -106,7 +103,6 @@ def sensors(name:str):
   date_key = 'dt'
   root_key = 'sensors'
   result = get_latest_named_with_tz_db(db, root_key,name)
-  print(result[0][date_key])
   date_stamp = dt.from_datetime(
     dt = result[0][date_key], 
     timestamp = True

@@ -46,7 +46,6 @@ class Weather():
                 city = addresslist[2]
             return location.latitude, location.longitude, city
         except Exception as e:
-            print("This is the location from Error {} ".format(e))
             return 41.232921, -85.649106, "columbia city"
 
     def get_weather_info(
@@ -61,7 +60,6 @@ class Weather():
         # lat, long, self.city = location
         lat = 41.232921
         long = -85.649106
-        # print(f" This is the location {location}")
         try:
             if use_api == True:
                 c = requests.get(f'https://api.openweathermap.org/data/2.5/weather?zip={zip_code},us&units={units}&appid={key}')
@@ -72,9 +70,7 @@ class Weather():
                 io.save_json(for_file, forecast, 'relative')
                 self.current = io.open_json(cur_file,'relative')
                 self.forecast_in = io.open_json(for_file,'relative')
-                print(f"use_api: {use_api}")
             else:
-                print(f"use_api: {use_api}")
                 self.current = io.open_json(cur_file, 'relative')
                 self.forecast_in = io.open_json(for_file,'relative')
         except Exception as e:
