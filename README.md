@@ -34,7 +34,7 @@ Installing python 3, pip on the raspberry pi or any debian based linux computer
 sudo apt-get install python3 python3-pip 
 
 ```
-Run this from a terminal in the dir you want. to clone the repo to your local computer
+Run this from a terminal in the dir where you want to clone the repo to your local computer
 
 ```bash
 git clone https://github.com/outlaws42/home.git
@@ -72,7 +72,7 @@ collects the information for the weather kiosk API.
 
 The best way to run these is to make these a system service that starts at boot time. 
 
-Besides these 3 you will need a system service for the mongoDB database. In Linux that uses systemd this is `sudo systemctl enable mongod.service` to enable the installed
+Besides these 3 you will need a system service for the mongoDB database. In Linux that uses systemd this is `sudo systemctl enable mongod` to enable the installed
 mongoDB database to start at boot time.  To install MongoDB server community Edition on Ubuntu Linux you can follow these instructions. [Install MongoDB in Ubuntu](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)   
 
 ```bash
@@ -87,7 +87,17 @@ prerequisites installed. Running the python files and starting everything at boo
 
 ## db_convert.py & past_cli.py
 
-These 2 files are not needed for the normal running of the server. I used **db_convert.py** to convert an old data dump from a sql database to the mongoDB database. I use  **past_cli.py** to get the days high low temp for the date specified if there is a issue for some reason that the automatic high low collection failed. This is rare but it is a tool that can be used to run and collect the high and low for the day specified and write to the past collection in the database.
+These 2 files are not needed for the normal running of the server. I used **db_convert.py** to convert an old data dump from a sql database to the mongoDB database. I use  **past_cli.py** to get the days high low temp for the date specified if there is a issue for some reason that the automatic high low collection failed. This is rare but it is a tool that can be used to run and collect the high and low for the day specified and write to the past collection in the database. The format for the past_cli.py comamand would be as follows
+
+```bash
+past_cli.py YYYY-MM-DD
+
+``` 
+for example: 
+
+```
+past_cli.py 2022-03-19
+```
 
 ## Example API Calls
 
