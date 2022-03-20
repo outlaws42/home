@@ -3,16 +3,24 @@
 
 # Imports ///////////////////
 from datetime import datetime, timedelta, date, time
-import pymongo
+# import pymongo
 from pymongo import MongoClient
 from bson.codec_options import CodecOptions
 import pytz
 import typer
-from weatherkiosk.settings import DB_URI, DATABASE
+from helpers.io import IO
+from config.conf import conf_dir, conf_file
+
+io = IO()
+
+# Get DB from Settings
+settings = io.open_settings(conf_dir, conf_file)
+db_uri = settings['DB_URI']
+database = settings['DATABASE']
 
 # Database info
-mongo = MongoClient(DB_URI)
-db = mongo[DATABASE]
+mongo = MongoClient(db_uri)
+db = mongo[database]
 
 app = typer.Typer()
 
@@ -60,6 +68,7 @@ def get_doc_date_db(col_read, find_key, str_date):
   """ Gets Documents from today mongoDB database """
   today = datetime_from_str_date(str_date)
   tomorrow = today + timedelta(1)
+  print(col_read)
   collection = db[col_read]
   aware_times = collection.with_options(
         codec_options=CodecOptions(tz_aware=True,tzinfo=pytz.timezone('US/Eastern')))
