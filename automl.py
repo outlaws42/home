@@ -36,7 +36,7 @@ accum_file = f'{conf_dir}/.open_time_accum'
 
 def add_open_time():
     try:
-      c = get('http://192.168.1.3:8000/house/sensors/gdbasement')
+      c = get('http://192.168.1.9:8000/house/sensors/gdbasement')
       result = c.json()
       sensor_val = result['sensors']['sensor_val']
     except Exception as e:
