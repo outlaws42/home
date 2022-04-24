@@ -33,10 +33,12 @@ mode = 1  # 0 = Debug mail, 1 = production
 time_increment = 1  # In min.
 open_time_file = f'{conf_dir}/.open_time'
 accum_file = f'{conf_dir}/.open_time_accum'
+settings = io.open_settings(conf_dir, conf_file)
+server_address = settings['SERVER_ADDRESS']
 
 def add_open_time():
     try:
-      c = get('http://192.168.1.9:8000/house/sensors/gdbasement')
+      c = get(f'http://{server_address}:8000/house/sensors/gdbasement')
       result = c.json()
       sensor_val = result['sensors']['sensor_val']
     except Exception as e:

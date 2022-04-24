@@ -21,7 +21,8 @@ client.connect(mqtt_broker)
 
 # Publish to the broker
 while True:
-    final_status = ht.html_info('b','http://192.168.1.24:8080')
+    garage_door = settings['GARAGE_DOOR_ADDRESS']
+    final_status = ht.html_info('b',f'http://{garage_door}:8080')
     client.publish('room/basement/gdstatus', final_status)
     # print(f'Just Published {final_status} to topic room/basement/gdstatus')
     time.sleep(10)
