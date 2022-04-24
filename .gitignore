@@ -10,6 +10,7 @@ config/settings.py
 config/settings.yaml
 weather/weather.db
 getpastdb.py
+test.py
 run.py
 *.geany
 homenv

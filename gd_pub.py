@@ -5,11 +5,17 @@
 import paho.mqtt.client as mqtt
 import time
 from helpers.html_tools import HT
+from config.conf import conf_dir, conf_file
+from helpers.io import IO
 
+io = IO()
 ht = HT()
 
+# Get config
+settings = io.open_settings(conf_dir, conf_file)
+
 # Create a client and connecting to the broker
-mqtt_broker = '192.168.1.9'
+mqtt_broker = settings['BROKER_ADDRESS']
 client = mqtt.Client('garage_door')
 client.connect(mqtt_broker)
 
