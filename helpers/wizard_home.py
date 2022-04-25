@@ -106,6 +106,20 @@ class WizardHome():
       default = ip
       )
     
+    ips = get_ip()
+    ipsadd = inp.input_single(
+      in_message="Enter the IP address for the server",
+      in_type = "ip4",
+      default = ips
+      )
+ 
+    ipg = get_ip()
+    ipgadd = inp.input_single(
+      in_message="Enter the IP address for the garage door",
+      in_type = "ip4",
+      default = ipg
+      )
+
     zip_code = inp.input_single(
       in_message="Enter the 5 digit US Zip code for weather data",
       in_type = "zip5"
@@ -122,6 +136,8 @@ class WizardHome():
         'USE_API': True,
         'API': 2,
         'BROKER_ADDRESS': ipadd,
+        'SERVER_ADDRESS': ipsadd,
+        'GARAGE_DOOR_ADDRESS': ipgadd,
         'ZIP_CODE': zip_code,
         'UNITS': units,
         'DB_URI': 'mongodb://localhost:27017',
