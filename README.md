@@ -2,10 +2,11 @@
 
 I previously wrote the weather kiosk using a raspberry pi with a display to display weather information.
 This has a bit of a different purpose. This will take information from a weather API (Currently OWM) and gleen what information I want.
-It will then present this information through a fastAPI for the local network to consume. 
-For me the main display is going to be similar display  with a 5" or 6" screen that will set 
-on a desk. 
-This time I am thinking this display will be a retired phone mounted in a frame running a flutter frontend.
+It will then present this information through an API for the local network to consume. 
+For me the main display is going to be similar display with a 5" or 6" screen that will set 
+on a desk.
+
+This is now a retired phone mounted in a frame running a flutter frontend. My flutter project for the frontend can be found [here](https://github.com/outlaws42/weather-kiosk_frontend) 
 
 Separating the frontend from the backend allows for any frontend that can read the created API and display it differently depending on the device it is running on.
 
@@ -79,19 +80,29 @@ mongoDB database to start at boot time.  To install MongoDB server community Edi
 
 ```
 
-### Optionally 
-
-
-**sensor_sub.py** Is set to subscribe to MQTT broker. On my network it gets the status of a Garage door and and a indoor temp sensor. It could be configured to subscribe to anything you are publishing over MQTT 
-
-**gd_pub.py** - This is used on my network to publish to the MQTT broker the status of my garage door. Either open or closed it. It gets the information by looking at the web server that is running on a raspberry pi attached to the garage door. This raspberry pi opens and closes the garage door and reports the status. It is not needed for the main weather backend to work.
-
 **Note:** You should be able to run this code on Windows and MacOS as well as long as you have the 
 prerequisites installed. Running the python files and starting everything at boot time will be different for those platforms but it should be possible.
 
-## db_convert.py & past_cli.py
+## Optional Files
 
-These 2 files are not needed for the normal running of the server. I used **db_convert.py** to convert an old data dump from a sql database to the mongoDB database. I use  **past_cli.py** to get the days high low temp for the date specified if there is a issue for some reason that the automatic high low collection failed. This is rare but it is a tool that can be used to run and collect the high and low for the day specified and write to the past collection in the database. The format for the past_cli.py comamand would be as follows
+The following files are not needed for the weather api to work but is use them on my setup for various reasons explained below.
+
+### sensor_sub.py 
+
+Is set to subscribe to MQTT broker. On my network it gets the status of a Garage door and and a indoor temp sensor. It could be configured to subscribe to anything you are publishing over MQTT 
+
+### gd_pub.py
+
+This is used on my network to publish to the MQTT broker the status of my garage door. Either open or closed it. It gets the information by looking at the web server that is running on a raspberry pi attached to the garage door. This raspberry pi opens and closes the garage door and reports the status.
+
+### db_convert.py 
+
+ Used to convert an old data dump from a sql database to the mongoDB database. 
+
+### past_cli.py
+
+ Is used to get the days high low temp for the date specified if there is a issue for some reason that the automatic high low collection failed. This is rare but it is a tool that can be used to run and collect the high and low for the day specified and write to the past collection in the database. The format for the past_cli.py comamand would be as follows
+
 
 ```bash
 past_cli.py YYYY-MM-DD
