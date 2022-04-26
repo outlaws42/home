@@ -66,21 +66,25 @@ chmod u+x *.py
 **get_weather.py** will check the weather API every 15 min. This is the main file that
 collects the information for the weather kiosk API.
 
-**sensor_sub.py** Is set to subscribe to MQTT broker. On my network it gets the status of a Garage door and and a indoor temp sensor. It could be configured to subscribe to anything you are publishing over MQTT 
-
 **main.py** serves up the fastAPI API for your front end. 
 
 The best way to run these is to make these a system service that starts at boot time. 
 
-Besides these 3 you will need a system service for the mongoDB database. In Linux that uses systemd this is `sudo systemctl enable mongod` to enable the installed
+Besides these 2 you will need a system service for the mongoDB database. In Linux that uses systemd this is `sudo systemctl enable mongod` to enable the installed
 mongoDB database to start at boot time.  To install MongoDB server community Edition on Ubuntu Linux you can follow these instructions. [Install MongoDB in Ubuntu](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)   
 
 ```bash
 ./get_weather.py
-./sensor_sub.py
 ./main.py
 
 ```
+
+### Optionally 
+
+
+**sensor_sub.py** Is set to subscribe to MQTT broker. On my network it gets the status of a Garage door and and a indoor temp sensor. It could be configured to subscribe to anything you are publishing over MQTT 
+
+**gd_pub.py** - This is used on my network to publish to the MQTT broker the status of my garage door. Either open or closed it. It gets the information by looking at the web server that is running on a raspberry pi attached to the garage door. This raspberry pi opens and closes the garage door and reports the status. It is not needed for the main weather backend to work.
 
 **Note:** You should be able to run this code on Windows and MacOS as well as long as you have the 
 prerequisites installed. Running the python files and starting everything at boot time will be different for those platforms but it should be possible.
