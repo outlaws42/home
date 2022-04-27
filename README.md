@@ -1,7 +1,7 @@
 # Home API
 
 I previously wrote the weather kiosk using a raspberry pi with a display to display weather information.
-This has a bit of a different purpose. This will take information from a weather API (Currently OWM) and gleen what information I want.
+This has a bit of a different purpose. This will take information from a weather API (Currently OWM) and glean what information I want.
 It will then present this information through an API for the local network to consume. 
 For me the main display is going to be similar display with a 5" or 6" screen that will set 
 on a desk.
@@ -14,11 +14,11 @@ Right now I am really working on this and it is changing all the time. Currently
 
 ## Prerequisites
 
-Requires: python 3.3, pip, Open Weather Map api key, mongoDB database. All other addon modules can be obtained by installing the pip requirements explained below.
+Requires: python 3.3, pip, Open Weather Map API key, MongoDB database. All other add on modules can be obtained by installing the pip requirements explained below.
 
 ## config.py
-You will need to create a dir in config called instance and put in your config.py.  So it will be like this config/instance/config.py 
-You can get a api key from https://openweathermap.org/  Alternatively you can use the weather bit API https://www.weatherbit.io/. To use weather bit you would need to change the `API` setting in the `settings.py` to 1 as well as get a weather bit API key and put it in the `config.py` file as follows. 
+You will need to create a directory in `config` called `instance` and put in your `config.py`.  So it will be like this `config/instance/config.py` 
+You can get a API key from https://openweathermap.org/  Alternatively you can use the weather bit API https://www.weatherbit.io/. To use weather bit you would need to change the `API` setting in the `settings.py` to 1 as well as get a weather bit API key and put it in the `config.py` file as follows. 
 
 ```python
 
@@ -29,19 +29,19 @@ WEATHER_BIT_API_KEY = 'your_weatherbit_api_key'
 
 ## Installing 
 
-Installing python 3, pip on the raspberry pi or any debian based linux computer
+Installing python 3, pip on the raspberry pi or any Debian based Linux computer
 ```bash
 sudo apt-get install python3 python3-pip 
 
 ```
-Run this from a terminal in the dir where you want to clone the repo to your local computer
+Run this from a terminal in the directory where you want to clone the repository to your local computer
 
 ```bash
 git clone https://github.com/outlaws42/home.git
 
 
 ```
-Change into the project main dir
+Change into the project main directory
 
 ```bash
 cd home
@@ -70,9 +70,10 @@ collects the information for the weather kiosk API.
 
 The best way to run these is to make these a system service that starts at boot time. 
 
-Besides these 2 you will need a system service for the mongoDB database. In Linux that uses systemd this is `sudo systemctl enable mongod` to enable the installed
-mongoDB database to start at boot time.  To install MongoDB server community Edition on Ubuntu Linux you can follow these instructions. [Install MongoDB in Ubuntu](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)   
+Besides these 2 you will need a system service for the MongoDB database. In Linux that uses systemd this is `sudo systemctl enable mongod` to enable the installed
+MongoDB database to start at boot time.  To install MongoDB server community Edition on Ubuntu Linux you can follow these instructions. [Install MongoDB in Ubuntu](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)   
 
+To run the 2 required files temporarily 
 ```bash
 ./get_weather.py
 ./main.py
@@ -84,11 +85,11 @@ prerequisites installed. Running the python files and starting everything at boo
 
 ## Optional Files
 
-The following files are not needed for the weather api to work but is use them on my setup for various reasons explained below.
+The following files are not needed for the weather API to work but is use them on my setup for various reasons explained below.
 
 ### sensor_sub.py 
 
-Is set to subscribe to MQTT broker. On my network it gets the status of a Garage door and and a indoor temp sensor. It could be configured to subscribe to anything you are publishing over MQTT 
+Is set to subscribe to MQTT broker. On my network it gets the status of a Garage door and a indoor temp sensor. It could be configured to subscribe to anything you are publishing over MQTT 
 
 ### gd_pub.py
 
@@ -96,11 +97,11 @@ This is used on my network to publish to the MQTT broker the status of my garage
 
 ### db_convert.py 
 
- Used to convert an old data dump from a sql database to the mongoDB database. 
+ Used to convert an old data dump from a SQL database to the MongoDB database. 
 
 ### past_cli.py
 
- Is used to get the days high low temp for the date specified if there is a issue for some reason that the automatic high low collection failed. This is rare but it is a tool that can be used to run and collect the high and low for the day specified and write to the past collection in the database. The format for the past_cli.py comamand would be as follows
+ Is used to get the days high low temp for the date specified if there is a issue for some reason that the automatic high low collection failed. This is rare but it is a tool that can be used to run and collect the high and low for the day specified and write to the past collection in the database. The format for the past_cli.py command would be as follows
 
 
 ```bash
